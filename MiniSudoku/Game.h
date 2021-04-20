@@ -1,30 +1,48 @@
 #pragma once
-#include "Gamestate.h"
 #include "SFML/Graphics.hpp"
 #include "SFML/System.hpp"
+
 #include "fstream"
-enum {
-	gamestateIntro,
-	gamestateMain,
-	};
+#include <iostream>
+#include <queue>
+
+#include "Text.h"
+#include "Button.h"
+enum class ButtonEventType {
+	None,
+	Pressed,
+	Released,
+	Moved
+};
+enum class Gamestates {
+	Intro,
+	Main,
+	Solving,
+	Generating,
+	Settings,
+	Other
+};
+struct mouseButtonEvent {
+	ButtonEventType type;
+	sf::Vector2i mousePos;
+};
 class Game
 {
-	//The purpose of this class is storing the textures and graphics
 	
+	int gamestate = 0;
 	sf::RenderWindow* window = NULL;
-	sf::Font* font;
-	std::vector<sf::Text> texts;
-	std::vector<sf::Sprite> sprites;
-	std::vector<std::unique_ptr<sf::Texture>> textures;
+	sf::Font font;
 
-	//Takes a  path, creates a texture and a sprite. returns an index to the sprite
-	size_t loadNPush(const std::string& PATH);
 
-	sf::Texture* makeTexture(std::string PATH);
-	sf::Font* makeFont();
-	//creates window, loads everything from files (if possible)
+	sf::Event event;
+	sf::Texture* loadTexture(std::string PATH);
+	sf::Font makeFont();
 	sf::RenderWindow* makeWindow();
+	void render();
 public:
 	Game();
+	void loop();
+	void MouseEventHandler(mouseButtonEvent& ev);
 };
+
 

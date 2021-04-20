@@ -1,23 +1,79 @@
 #include "Game.h"
-
 Game::Game()
 {
 	font = makeFont();
 	window = makeWindow();
-	
+	window->clear();
+	//vreau sa stiu unde pun textura si unde pun sprite-ul
+	//acum primesc doar un index la un sprite
+	//vreau sa primesc index la textura
+}
+
+void Game::render()
+{
+	window->display();
 }
 
 
-sf::Texture* Game::makeTexture(std::string PATH)
+
+void Game::loop()
+{
+	while (window->isOpen())
+	{
+		while (window->pollEvent(event))
+		{
+			mouseButtonEvent mouseEvent;
+			// check the type of the event...
+			switch (event.type)
+			{
+
+			case sf::Event::MouseButtonPressed:
+				mouseEvent.type = ButtonEventType::Pressed;
+				break;
+			case sf::Event::MouseButtonReleased:
+				mouseEvent.type = ButtonEventType::Released;
+				break;
+
+			case sf::Event::MouseMoved:
+				mouseEvent.type = ButtonEventType::Moved;
+				mouseEvent.mousePos = sf::Mouse::getPosition(*window);
+				break;
+			}
+			MouseEventHandler(mouseEvent);
+		}
+		render();
+	}
+}
+
+void Game::MouseEventHandler(mouseButtonEvent& ev)
+{
+	switch (ev.type)
+	{
+	case ButtonEventType::Pressed:
+		std::cout << "p\n";
+		break;
+	case ButtonEventType::Moved:
+		std::cout << "m\n";
+		break;
+	case ButtonEventType::Released:
+		std::cout << "r\n";
+		//make sound
+		break;
+	case ButtonEventType::None:
+		std::cout << "n\n";
+		break;
+	}
+}
+sf::Texture* Game::loadTexture(std::string PATH)
 {
 	sf::Texture* temp = new sf::Texture;
 	temp->loadFromFile("Resources\\Textures\\" + PATH);
 	return temp;
 }
-sf::Font* Game::makeFont()
+ sf::Font Game::makeFont()
 {
-	sf::Font* temp = new sf::Font;
-	temp->loadFromFile("Resources\\Fonts\\font.ttf");
+	sf::Font temp;
+	temp.loadFromFile("Resources\\Fonts\\font.ttf");
 	return temp;
 }
 
@@ -51,19 +107,3 @@ sf::RenderWindow* Game::makeWindow()
 	tempwindow->setVerticalSyncEnabled(vsync);
 	return tempwindow;
 }
-
-
-size_t Game::loadNPush(const std::string& PATH)
-{
-	auto texture = std::make_unique<sf::Texture>();				//std::unique_ptr<sf::Texture>texture = std::make_unique<sf::Texture>();
-	texture->loadFromFile("Resources\\Textures\\" + PATH);
-	
-	sf::Sprite sprite;
-	sprite.setTexture(*texture);
-
-	sprites.push_back(sprite);
-	textures.push_back(std::move(texture));
-
-	return sprites.size();
-}
-

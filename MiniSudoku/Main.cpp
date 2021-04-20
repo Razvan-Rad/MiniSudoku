@@ -3,4 +3,5 @@
 int main()
 {
 	Game game;
+	game.loop();
 }
