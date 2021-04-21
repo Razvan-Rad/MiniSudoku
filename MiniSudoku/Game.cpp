@@ -3,14 +3,21 @@ Game::Game()
 {
 	font = makeFont();
 	window = makeWindow();
-	window->clear();
 	//vreau sa stiu unde pun textura si unde pun sprite-ul
 	//acum primesc doar un index la un sprite
 	//vreau sa primesc index la textura
+	initTextures();
+	initSprites();
 }
 
 void Game::render()
 {
+	window->clear();
+	for (int i = 0; i < sprites.size(); i++)
+	{
+		sprites[i].setPosition(i*20, i*20);
+		window->draw(sprites[i]);
+	}
 	window->display();
 }
 
@@ -74,12 +81,7 @@ void Game::mouseEventHandler(MouseButtonEvent& ev)
 
 	}
 }
-sf::Texture* Game::loadTexture(std::string PATH)
-{
-	sf::Texture* temp = new sf::Texture;
-	temp->loadFromFile("Resources\\Textures\\" + PATH);
-	return temp;
-}
+
 sf::Font Game::makeFont()
 {
 	sf::Font temp;
@@ -92,6 +94,31 @@ void Game::handleSfmlEvent(sf::Event event)
 }
 void Game::buttonMouseHandler(int newButtonState)
 {
+}
+sf::Texture Game::loadTexture(std::string PATH)
+{
+	sf::Texture texture;
+	texture.loadFromFile("Resources\\Textures\\" + PATH);
+
+	return texture;
+}
+void Game::initTextures()
+{
+	std::ifstream read;
+	read.open("Resources\\Textures\\textures.txt");
+	std::string x;
+
+	while (getline(read, x))
+		if(x[0] != '#') textures.push_back(loadTexture(x + ".jpg"));
+}
+void Game::initSprites()
+{
+	for (int i = 0; i < textures.size(); i++)
+	{
+		sf::Sprite temp;
+		temp.setTexture(textures[i]);
+		sprites.push_back(temp);
+	}
 }
 sf::RenderWindow* Game::makeWindow()
 {

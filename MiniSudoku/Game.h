@@ -5,7 +5,7 @@
 #include "fstream"
 #include <iostream>
 #include <queue>
-
+#include <string>
 #include "Text.h"
 #include "Button.h"
 enum class ButtonEventType {
@@ -23,10 +23,27 @@ enum class Gamestates {
 	Settings,
 	Other
 };
-enum {
+enum buttonState{
 	eNone,
 	eHovered,
 	eClicked
+};
+enum textureIndexes{
+	eBtn,
+	eHover_btn,
+	eActive_btn,
+
+	eBox,
+	eHover_box,
+	eActive_box,
+
+	eBack,
+	eHover_back,
+	eActive_back,
+	eBackground,
+	eIntroBackground
+
+
 };
 struct MouseButtonEvent {
 	ButtonEventType type;
@@ -47,10 +64,12 @@ class Game
 	sf::RenderWindow* window = NULL;
 	sf::Font font;
 
-	sf::Texture* loadTexture(std::string PATH);
 	sf::Font makeFont();
 	sf::RenderWindow* makeWindow();
 	void render();
+
+	std::vector<sf::Texture> textures;
+	std::vector<sf::Sprite> sprites;
 public:
 	Game();
 	void loop();
@@ -58,6 +77,9 @@ public:
 	void keyboardEventHandler(KeyboardEvent& ev);
 	void handleSfmlEvent(sf::Event event);
 	void buttonMouseHandler(int newButtonState);
+	sf::Texture loadTexture(std::string PATH);
+	void initTextures();
+	void initSprites();
 };
 
 //buttonChecker(state).
