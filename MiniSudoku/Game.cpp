@@ -9,16 +9,17 @@ Game::Game()
 	initTable();
 	initTextures();
 	initSprites();
+	prepareSprites();
 }
 
 
 void Game::render()
 {
 	window->clear();
-	for (int i = 0; i < sprites.size(); i++)
+	for (int i = 0; i < other_sprites.size(); i++)
 	{
-		sprites[i].setPosition(i*20, i*20);
-		window->draw(sprites[i]);
+		other_sprites[i].setPosition(i*20, i*20);
+		window->draw(other_sprites[i]);
 	}
 	window->display();
 }
@@ -132,6 +133,7 @@ void Game::initTextures()
 		if (flaggedTextures[i].second == true) interractable_textures.push_back(flaggedTextures[i].first);
 		else  other_textures.push_back(flaggedTextures[i].first);
 	}
+	read.close();
 
 }
 void Game::initSprites()
@@ -140,8 +142,14 @@ void Game::initSprites()
 	{
 		sf::Sprite temp;
 		temp.setTexture(other_textures[i]);
-		sprites.push_back(temp);
+		other_sprites.push_back(temp);
 	}
+}
+void Game::prepareSprites()
+{
+
+	other_sprites[0].setScale(18.75, 18.75);
+	other_sprites[1].setScale(3.733333333, 4);
 }
 sf::RenderWindow* Game::makeWindow()
 {
@@ -151,6 +159,7 @@ sf::RenderWindow* Game::makeWindow()
 	//open settings and read parameters
 	std::ifstream read;
 	read.open("Resources\\settings.txt");
+	
 	std::string x = "Solver";
 	if (read.is_open())
 	{
@@ -167,7 +176,6 @@ sf::RenderWindow* Game::makeWindow()
 			width = 600,
 			frame_limit = 30;
 	}
-
 	sf::RenderWindow* tempwindow = new sf::RenderWindow(sf::VideoMode(width, height), x);
 	tempwindow->setFramerateLimit(frame_limit);
 	tempwindow->setVerticalSyncEnabled(vsync);

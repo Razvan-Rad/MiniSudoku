@@ -70,7 +70,7 @@ class Game
 
 	std::vector<sf::Texture> interractable_textures;
 	std::vector<sf::Texture> other_textures; 
-	std::vector<sf::Sprite> sprites;
+	std::vector<sf::Sprite> other_sprites;
 public:
 	Game();
 	void loop();
@@ -81,6 +81,7 @@ public:
 	sf::Texture loadTexture(std::string PATH);
 	void initTextures();
 	void initSprites();
+	void prepareSprites();
 };
 
 //buttonChecker(state).
