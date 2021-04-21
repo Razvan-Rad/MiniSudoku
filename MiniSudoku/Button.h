@@ -7,6 +7,7 @@ class Button:public BaseObject,public Text
 	void assignTexture();
 public:
 	sf::RectangleShape rect;
+	int state;
 	int textureIndex;
 	Button(std::string str, sf::Font& font, float x, float y, float width, float height, int id = -1);
 	Button();
