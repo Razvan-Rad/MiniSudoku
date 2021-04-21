@@ -19,7 +19,9 @@ struct KeyboardEvent {
 
 };
 
+struct FlaggedButton {
 
+};
 class Game
 {
 	Table sudoku;
@@ -49,6 +51,7 @@ class Game
 	void initSprites();
 	void prepareSprites();
 	void initButtons();
+	std::pair<Button, bool>checkButtonColision(std::vector<Button> btns, sf::Vector2i);
 public:
 	Game();
 	void loop();

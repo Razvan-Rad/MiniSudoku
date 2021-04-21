@@ -69,6 +69,7 @@ void Game::loop()
 
 void Game::mouseEventHandler(MouseButtonEvent& ev)
 {
+	//got a custom event. we have to see what type it is, so we can see if there's any button that needs updated
 	switch (ev.type)
 	{
 	case ButtonEventType::None:
@@ -107,18 +108,16 @@ void Game::handleSfmlEvent(sf::Event event)
 }
 void Game::buttonMouseHandler(int newButtonState,sf::Vector2i v2i)
 {
-	//we go through each possible button, 
-	//if we find a button, we update it with the adequate texture
-	for (int i = 0; i < buttons.size(); i++)
-	{
-		if (buttons[i].checkBounds(v2i))
-		{
-			std::cout << buttons[i].textureIndex;
-			buttons[i].rect.setTexture(&interractable_textures[newButtonState + buttons[i].textureIndex]);
-		}
-		else 
-			buttons[i].rect.setTexture(&interractable_textures[0]);
-	}
+		std::pair<Button, bool> flaggedButton= std::make_pair(Button("",font,0,0,0,0,0),false);
+
+		flaggedButton = checkButtonColision(buttons, v2i);
+
+		if (flaggedButton.second)
+			flaggedButton.first.rect.setTexture(&interractable_textures[newButtonState + flaggedButton.first.textureIndex]);
+		else
+			flaggedButton.first.rect.setTexture(&interractable_textures[0]);
+	
+
 }
 sf::Texture Game::loadTexture(std::string PATH)
 {
@@ -134,7 +133,6 @@ void Game::initTextures()
 	std::string x;
 	//we flag the textures which we know are interractable, and we put those in interractable textures
 	std::vector<std::pair<sf::Texture, bool>> flaggedTextures;
-
 
 	while (getline(read, x))
 		if (x[0] != '#')
@@ -180,6 +178,21 @@ void Game::initButtons()
 	play.rect.setTexture(&interractable_textures[eBtn]);
 	buttons.push_back(play);
 }
+
+
+std::pair<Button,bool> Game::checkButtonColision(std::vector<Button> btns, sf::Vector2i mousepos)
+{
+	for (int i = 0; i < btns.size(); i++)
+	{
+		if (buttons[i].checkBounds(mousepos))
+
+			std::cout << &buttons[i];
+			return std::make_pair(buttons[i],true);
+	}
+	std::cout << "fail ";
+	return std::make_pair(Button("", font, 0, 0, 0, 0, 0), false);
+}
+
 Button Game::makeButton(std::string str, sf::Font& font, float x, float y, float width, float height, int id)
 {
 	Button btn(str, font, x, y, width, height,id);
