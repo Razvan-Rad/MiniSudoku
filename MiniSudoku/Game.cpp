@@ -20,15 +20,16 @@ void Game::loop()
 {
 	while (window->isOpen())
 	{
+		sf::Event event;
 		while (window->pollEvent(event))
 		{
-			mouseButtonEvent mouseEvent;
-			// check the type of the event...
+			KeyboardEvent keyboardEvent;
+			MouseButtonEvent mouseEvent;
 			switch (event.type)
 			{
-
 			case sf::Event::MouseButtonPressed:
 				mouseEvent.type = ButtonEventType::Pressed;
+
 				break;
 			case sf::Event::MouseButtonReleased:
 				mouseEvent.type = ButtonEventType::Released;
@@ -38,30 +39,39 @@ void Game::loop()
 				mouseEvent.type = ButtonEventType::Moved;
 				mouseEvent.mousePos = sf::Mouse::getPosition(*window);
 				break;
+			default:
+				mouseEvent.type = ButtonEventType::None;
 			}
-			MouseEventHandler(mouseEvent);
+			mouseEventHandler(mouseEvent);
 		}
 		render();
 	}
 }
 
-void Game::MouseEventHandler(mouseButtonEvent& ev)
+
+void Game::mouseEventHandler(MouseButtonEvent& ev)
 {
 	switch (ev.type)
 	{
+	case ButtonEventType::None:
+		break;
 	case ButtonEventType::Pressed:
 		std::cout << "p\n";
+
 		break;
 	case ButtonEventType::Moved:
+
+		buttonMouseHandler(eHovered);
+		//go through all buttons 
+		//see if the mouse pos is within any button's bounds
+		//change button state
 		std::cout << "m\n";
 		break;
 	case ButtonEventType::Released:
 		std::cout << "r\n";
 		//make sound
 		break;
-	case ButtonEventType::None:
-		std::cout << "n\n";
-		break;
+
 	}
 }
 sf::Texture* Game::loadTexture(std::string PATH)
@@ -70,13 +80,19 @@ sf::Texture* Game::loadTexture(std::string PATH)
 	temp->loadFromFile("Resources\\Textures\\" + PATH);
 	return temp;
 }
- sf::Font Game::makeFont()
+sf::Font Game::makeFont()
 {
 	sf::Font temp;
 	temp.loadFromFile("Resources\\Fonts\\font.ttf");
 	return temp;
 }
+void Game::handleSfmlEvent(sf::Event event)
+{
 
+}
+void Game::buttonMouseHandler(int newButtonState)
+{
+}
 sf::RenderWindow* Game::makeWindow()
 {
 	//given initial values in case we can't open settings
