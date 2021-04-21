@@ -12,55 +12,8 @@
 #include <iostream>
 #include <queue>
 #include <string>
-enum class ButtonEventType {
-	None,
-	Pressed,
-	Released,
-	Moved
 
-};
-enum class Gamestates {
-	Intro,
-	Main,
-	Solving,
-	Generating,
-	Settings,
-	Other
-};
-enum buttonState{
-	eNone,
-	eHovered,
-	eClicked
-};
-enum other_texture_indexes {
-	eBg,
-	eIntroBg
-};
-enum interractable_texture_indexes{
-	eBtn,
-	eHover_btn,
-	eActive_btn,
-
-	eBox,
-	eHover_box,
-	eActive_box,
-
-	eBack,
-	eHover_back,
-	eActive_back,
-};
-enum ID {
-	ePlay,
-	eSettings,
-	eMedia,
-	eGenerate,
-	eSolve
-};
-struct MouseButtonEvent {
-	ButtonEventType type;
-	sf::Vector2i mousePos;
-};
-
+#include "enums.h"
 
 struct KeyboardEvent {
 
@@ -90,7 +43,7 @@ class Game
 	void mouseEventHandler(MouseButtonEvent& ev);
 	void keyboardEventHandler(KeyboardEvent& ev);
 	void handleSfmlEvent(sf::Event event);
-	void buttonMouseHandler(int newButtonState);
+	void buttonMouseHandler(int newButtonState, sf::Vector2i v2i);
 	sf::Texture loadTexture(std::string PATH);
 	void initTextures();
 	void initSprites();
@@ -102,9 +55,5 @@ public:
 	Button makeButton(std::string str, sf::Font& font, float x, float y, float width, float height, int id);
 };
 
-//buttonChecker(state).
-	//mergem la fiecare buton, verificam bounds
-		//if(mousePos within button.bounds) , 
-			//button.updateButton(state)
-				
+	
 				

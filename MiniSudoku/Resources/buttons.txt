@@ -1,0 +1,6 @@
+play 50 50 50 50
+settings 100 50 50 50
+media 150 50 50 50
+generate 200 50 50 50
+solve 250 50 50 50
+back 300 50 50 50 

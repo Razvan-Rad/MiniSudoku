@@ -23,6 +23,10 @@ void Game::render()
 		other_sprites[i].setPosition(i*20, i*20);
 		window->draw(other_sprites[i]);
 	}	
+	for (int i = 0; i < buttons.size(); i++)
+	{
+		window->draw(buttons[i].rect);
+	}
 	window->display();
 }
 
@@ -69,18 +73,20 @@ void Game::mouseEventHandler(MouseButtonEvent& ev)
 	{
 	case ButtonEventType::None:
 		break;
+
+
 	case ButtonEventType::Pressed:
 		std::cout << "p\n";
 
 		break;
-	case ButtonEventType::Moved:
 
-		buttonMouseHandler(eHovered);
-		//go through all buttons 
-		//see if the mouse pos is within any button's bounds
-		//change button state
+
+	case ButtonEventType::Moved:
+		buttonMouseHandler(eHovered, ev.mousePos);
 		std::cout << "m\n";
 		break;
+
+
 	case ButtonEventType::Released:
 		std::cout << "r\n";
 		//make sound
@@ -99,8 +105,20 @@ void Game::handleSfmlEvent(sf::Event event)
 {
 
 }
-void Game::buttonMouseHandler(int newButtonState)
+void Game::buttonMouseHandler(int newButtonState,sf::Vector2i v2i)
 {
+	//we go through each possible button, 
+	//if we find a button, we update it with the adequate texture
+	for (int i = 0; i < buttons.size(); i++)
+	{
+		if (buttons[i].checkBounds(v2i))
+		{
+			std::cout << buttons[i].textureIndex;
+			buttons[i].rect.setTexture(&interractable_textures[newButtonState + buttons[i].textureIndex]);
+		}
+		else 
+			buttons[i].rect.setTexture(&interractable_textures[0]);
+	}
 }
 sf::Texture Game::loadTexture(std::string PATH)
 {
@@ -158,7 +176,7 @@ void Game::prepareSprites()
 void Game::initButtons()
 {
 	
-	Button play = makeButton("hey", font, 50, 50, 50, 50, ePlay);
+	Button play = makeButton("play", font, 50, 50, 50, 50, ePlayID);
 	play.rect.setTexture(&interractable_textures[eBtn]);
 	buttons.push_back(play);
 }
