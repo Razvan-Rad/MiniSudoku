@@ -9,3 +9,7 @@ bool BaseObject::checkBounds(sf::Vector2i& v2i)
 {
 	return bounds.contains(v2i);
 }
+
+BaseObject::BaseObject()
+{
+}

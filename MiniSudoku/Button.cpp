@@ -17,4 +17,9 @@ Button::Button(std::string str, sf::Font &font,float x, float y, float width, fl
 	assignTexture();
 	rect.setSize(sf::Vector2f(width, height));
 	rect.setPosition(x, y);
+	
+}
+
+Button::Button() :BaseObject(), Text()
+{
 }

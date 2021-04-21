@@ -9,6 +9,6 @@ public:
 	sf::RectangleShape rect;
 	int textureIndex;
 	Button(std::string str, sf::Font& font, float x, float y, float width, float height, int id = -1);
-	
+	Button();
 };
 

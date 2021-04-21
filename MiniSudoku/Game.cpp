@@ -108,14 +108,19 @@ void Game::handleSfmlEvent(sf::Event event)
 }
 void Game::buttonMouseHandler(int newButtonState,sf::Vector2i v2i)
 {
-		std::pair<Button, bool> flaggedButton= std::make_pair(Button("",font,0,0,0,0,0),false);
+		std::pair<Button*, bool> flaggedButton;
 
 		flaggedButton = checkButtonColision(buttons, v2i);
-
+		std::cout << &flaggedButton.first->bounds << std::endl;
 		if (flaggedButton.second)
-			flaggedButton.first.rect.setTexture(&interractable_textures[newButtonState + flaggedButton.first.textureIndex]);
+		{
+
+			
+			flaggedButton.first->rect.setTexture(&interractable_textures[2]);
+			flaggedButton.first->rect.setPosition(40, 400);
+		}
 		else
-			flaggedButton.first.rect.setTexture(&interractable_textures[0]);
+			flaggedButton.first->rect.setTexture(&interractable_textures[0]);
 	
 
 }
@@ -180,17 +185,18 @@ void Game::initButtons()
 }
 
 
-std::pair<Button,bool> Game::checkButtonColision(std::vector<Button> btns, sf::Vector2i mousepos)
+std::pair<Button*,bool> Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos)
 {
 	for (int i = 0; i < btns.size(); i++)
 	{
-		if (buttons[i].checkBounds(mousepos))
-
-			std::cout << &buttons[i];
-			return std::make_pair(buttons[i],true);
+		if (btns[i].checkBounds(mousepos))
+		{
+			std::cout << &btns[i].bounds << "      ";
+			return std::make_pair(&btns[i], true);
+		}
 	}
 	std::cout << "fail ";
-	return std::make_pair(Button("", font, 0, 0, 0, 0, 0), false);
+	return std::make_pair(&x, false);
 }
 
 Button Game::makeButton(std::string str, sf::Font& font, float x, float y, float width, float height, int id)

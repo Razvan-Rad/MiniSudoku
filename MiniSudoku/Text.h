@@ -8,4 +8,5 @@ class Text
 public:
 	sf::Text text;
 	Text(sf::Font& tempfont,std::string &str, float x=0, float y=0);
+	Text();
 };

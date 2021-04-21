@@ -8,3 +8,7 @@ Text::Text(sf::Font& tempofont,std::string &str, float x, float y)
 	this->text.setPosition(x, y);
 	text.setFillColor(sf::Color::Red);
 }
+Text::Text()
+{
+
+}
