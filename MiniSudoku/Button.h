@@ -6,8 +6,7 @@ class Button:BaseObject,Text
 {
 	
 public:
-	sf::RectangleShape hitbox;
+	sf::RectangleShape rect;
 	Button(std::string str, sf::Font& font, float x, float y, float width, float height, int id = -1);
-
 };
 

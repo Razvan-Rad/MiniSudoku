@@ -5,5 +5,5 @@ Button::Button(std::string str, sf::Font &font,float x, float y, float width, fl
 	, Text(font,str,x,y)
 {
 
-	hitbox.setSize(sf::Vector2f(width, height));
+	rect.setSize(sf::Vector2f(width, height));
 }

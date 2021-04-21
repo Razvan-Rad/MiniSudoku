@@ -1,13 +1,17 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "SFML/System.hpp"
+#include "SFML/Audio.hpp"
+
+
+#include "Text.h"
+#include "Button.h"
 #include "Table.h"
 #include "fstream"
+
 #include <iostream>
 #include <queue>
 #include <string>
-#include "Text.h"
-#include "Button.h"
 enum class ButtonEventType {
 	None,
 	Pressed,
@@ -28,7 +32,11 @@ enum buttonState{
 	eHovered,
 	eClicked
 };
-enum textureIndexes{
+enum other_texture_indexes {
+	eBg,
+	eIntroBg
+};
+enum interractable_texture_indexes{
 	eBtn,
 	eHover_btn,
 	eActive_btn,
@@ -40,10 +48,13 @@ enum textureIndexes{
 	eBack,
 	eHover_back,
 	eActive_back,
-	eBackground,
-	eIntroBackground
-
-
+};
+enum ID {
+	ePlay,
+	eSettings,
+	eMedia,
+	eGenerate,
+	eSolve
 };
 struct MouseButtonEvent {
 	ButtonEventType type;
@@ -62,7 +73,6 @@ class Game
 	int gamestate = 0;
 	sf::RenderWindow* window = NULL;
 	sf::Font font;
-
 	sf::Font makeFont();
 	sf::RenderWindow* makeWindow();
 	void initTable();
@@ -70,10 +80,13 @@ class Game
 
 	std::vector<sf::Texture> interractable_textures;
 	std::vector<sf::Texture> other_textures; 
+
 	std::vector<sf::Sprite> other_sprites;
-public:
-	Game();
-	void loop();
+
+	std::vector<Button> buttons;
+	std::vector<Button> boxes;
+
+
 	void mouseEventHandler(MouseButtonEvent& ev);
 	void keyboardEventHandler(KeyboardEvent& ev);
 	void handleSfmlEvent(sf::Event event);
@@ -82,6 +95,11 @@ public:
 	void initTextures();
 	void initSprites();
 	void prepareSprites();
+	void initButtons();
+public:
+	Game();
+	void loop();
+	Button makeButton(std::string str, sf::Font& font, float x, float y, float width, float height, int id);
 };
 
 //buttonChecker(state).

@@ -9,6 +9,8 @@ Game::Game()
 	initTable();
 	initTextures();
 	initSprites();
+	//std::string str, sf::Font &font,float x, float y, float width, float height, int id
+	initButtons();
 	prepareSprites();
 }
 
@@ -20,7 +22,7 @@ void Game::render()
 	{
 		other_sprites[i].setPosition(i*20, i*20);
 		window->draw(other_sprites[i]);
-	}
+	}	
 	window->display();
 }
 
@@ -28,6 +30,8 @@ void Game::render()
 
 void Game::loop()
 {
+	initButtons();
+
 	while (window->isOpen())
 	{
 		sf::Event event;
@@ -148,9 +152,27 @@ void Game::initSprites()
 void Game::prepareSprites()
 {
 
-	other_sprites[0].setScale(18.75, 18.75);
-	other_sprites[1].setScale(3.733333333, 4);
+	other_sprites[eBg].setScale(18.75, 18.75);
+	other_sprites[eIntroBg].setScale(3.733333333, 4);
 }
+void Game::initButtons()
+{
+	
+	Button play = makeButton("hey", font, 50, 50, 50, 50, ePlay);
+	play.rect.setTexture(&interractable_textures[eBtn]);
+	buttons.push_back(play);
+}
+Button Game::makeButton(std::string str, sf::Font& font, float x, float y, float width, float height, int id)
+{
+	Button btn(str, font, x, y, width, height,id);
+	return btn;
+}
+
+
+
+
+
+
 sf::RenderWindow* Game::makeWindow()
 {
 	//given initial values in case we can't open settings
