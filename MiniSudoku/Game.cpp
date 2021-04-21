@@ -109,16 +109,37 @@ void Game::initTextures()
 	std::ifstream read;
 	read.open("Resources\\Textures\\textures.txt");
 	std::string x;
+	//we flag the textures which we know are interractable, and we put those in interractable textures
+	std::vector<std::pair<sf::Texture, bool>> flaggedTextures;
+
 
 	while (getline(read, x))
-		if(x[0] != '#') textures.push_back(loadTexture(x + ".jpg"));
+		if (x[0] != '#')
+		{
+			if (x[0] == '!') // Flagged as interractable, add bool
+			{
+				x.erase(0, 1);
+				flaggedTextures.push_back(std::make_pair(loadTexture(x + ".jpg"), true	));
+				std::cout << "pushed " << x << std::endl;
+			}
+			else //not flagged as interractable
+			{
+				flaggedTextures.push_back(std::make_pair(loadTexture(x + ".jpg"), false));
+			}
+		}
+	for (int i = 0; i < flaggedTextures.size(); i++)
+	{
+		if (flaggedTextures[i].second == true) interractable_textures.push_back(flaggedTextures[i].first);
+		else  other_textures.push_back(flaggedTextures[i].first);
+	}
+
 }
 void Game::initSprites()
 {
-	for (int i = 0; i < textures.size(); i++)
+	for (int i = 0; i < other_textures.size(); i++)
 	{
 		sf::Sprite temp;
-		temp.setTexture(textures[i]);
+		temp.setTexture(other_textures[i]);
 		sprites.push_back(temp);
 	}
 }

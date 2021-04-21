@@ -68,7 +68,8 @@ class Game
 	void initTable();
 	void render();
 
-	std::vector<sf::Texture> textures;
+	std::vector<sf::Texture> interractable_textures;
+	std::vector<sf::Texture> other_textures; 
 	std::vector<sf::Sprite> sprites;
 public:
 	Game();
