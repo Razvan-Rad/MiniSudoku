@@ -6,9 +6,11 @@ Game::Game()
 	//vreau sa stiu unde pun textura si unde pun sprite-ul
 	//acum primesc doar un index la un sprite
 	//vreau sa primesc index la textura
+	initTable();
 	initTextures();
 	initSprites();
 }
+
 
 void Game::render()
 {
@@ -149,4 +151,8 @@ sf::RenderWindow* Game::makeWindow()
 	tempwindow->setFramerateLimit(frame_limit);
 	tempwindow->setVerticalSyncEnabled(vsync);
 	return tempwindow;
+}
+void Game::initTable()
+{
+	sudoku = Table();
 }

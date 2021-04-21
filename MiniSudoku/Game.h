@@ -1,7 +1,7 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "SFML/System.hpp"
-
+#include "Table.h"
 #include "fstream"
 #include <iostream>
 #include <queue>
@@ -56,16 +56,16 @@ struct KeyboardEvent {
 };
 
 
-
-
 class Game
 {
+	Table sudoku;
 	int gamestate = 0;
 	sf::RenderWindow* window = NULL;
 	sf::Font font;
 
 	sf::Font makeFont();
 	sf::RenderWindow* makeWindow();
+	void initTable();
 	void render();
 
 	std::vector<sf::Texture> textures;
