@@ -40,7 +40,7 @@ class Game
 
 	std::vector<Button> buttons;
 	std::vector<Button> boxes;
-	Button x;
+
 
 	void mouseEventHandler(MouseButtonEvent& ev);
 	void keyboardEventHandler(KeyboardEvent& ev);

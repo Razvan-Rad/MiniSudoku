@@ -10,7 +10,6 @@ Game::Game()
 	initTextures();
 	initSprites();
 	//std::string str, sf::Font &font,float x, float y, float width, float height, int id
-	initButtons();
 	prepareSprites();
 }
 
@@ -21,7 +20,7 @@ void Game::render()
 	for (int i = 0; i < other_sprites.size(); i++)
 	{
 		other_sprites[i].setPosition(i*20, i*20);
-		window->draw(other_sprites[i]);
+		//window->draw(other_sprites[i]);
 	}	
 	for (int i = 0; i < buttons.size(); i++)
 	{
@@ -111,17 +110,8 @@ void Game::buttonMouseHandler(int newButtonState,sf::Vector2i v2i)
 		std::pair<Button*, bool> flaggedButton;
 
 		flaggedButton = checkButtonColision(buttons, v2i);
-		std::cout << &flaggedButton.first->bounds << std::endl;
-		if (flaggedButton.second)
-		{
-
-			
+		if (flaggedButton.second == true)
 			flaggedButton.first->rect.setTexture(&interractable_textures[2]);
-			flaggedButton.first->rect.setPosition(40, 400);
-		}
-		else
-			flaggedButton.first->rect.setTexture(&interractable_textures[0]);
-	
 
 }
 sf::Texture Game::loadTexture(std::string PATH)
@@ -146,7 +136,6 @@ void Game::initTextures()
 			{
 				x.erase(0, 1);
 				flaggedTextures.push_back(std::make_pair(loadTexture(x + ".jpg"), true	));
-				std::cout << "pushed " << x << std::endl;
 			}
 			else //not flagged as interractable
 			{
@@ -178,8 +167,7 @@ void Game::prepareSprites()
 }
 void Game::initButtons()
 {
-	
-	Button play = makeButton("play", font, 50, 50, 50, 50, ePlayID);
+	Button play = makeButton("play", font, 50, 50, 150, 50, ePlayID);
 	play.rect.setTexture(&interractable_textures[eBtn]);
 	buttons.push_back(play);
 }
@@ -191,11 +179,11 @@ std::pair<Button*,bool> Game::checkButtonColision(std::vector<Button>& btns, sf:
 	{
 		if (btns[i].checkBounds(mousepos))
 		{
-			std::cout << &btns[i].bounds << "      ";
 			return std::make_pair(&btns[i], true);
 		}
+		btns[i].rect.setTexture(&interractable_textures[btns[i].textureIndex]);
 	}
-	std::cout << "fail ";
+	Button x;
 	return std::make_pair(&x, false);
 }
 
