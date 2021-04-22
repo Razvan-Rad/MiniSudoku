@@ -24,7 +24,7 @@ void Button::assignTexture(int id)
 	}
 }
 
-Button::Button(std::string str, sf::Font& font, float x, float y, float width, float height, int id)
+Button::Button(const std::string& str, const sf::Font& font, float x, float y, float width, float height, int id)
 	:BaseObject(x, y, width, height, id)
 	, Text(font, str, x, y)
 {
@@ -41,7 +41,6 @@ Button::Button() :BaseObject(), Text()
 void Button::setTexture(std::vector<sf::Texture>& textures)
 {
 	rect.setTexture(&textures[textureIndex + state]);
-	std::cout << textureIndex + state;
 	needUpdating = false;
 }
 
@@ -55,4 +54,14 @@ void Button::textureUpdateHandler(int newButtonState)
 			state = newButtonState;
 		}
 	}
+}
+
+bool Button::getChangeable()
+{
+	return changeable;
+}
+
+sf::RectangleShape& Button::getRect()
+{
+	return rect;
 }

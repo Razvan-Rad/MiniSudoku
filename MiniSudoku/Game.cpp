@@ -9,34 +9,29 @@ Game::Game()
 	initTable();
 	initTextures();
 	initSprites();
-	//std::string str, sf::Font &font,float x, float y, float width, float height, int id
-	prepareSprites();
+	initButtons();
 }
 
 
 void Game::render()
 {
 	window->clear();
-	for (int i = 0; i < other_sprites.size(); i++)
+	for (size_t i = 0; i < other_sprites.size(); i++)
 	{
 		other_sprites[i].setPosition(i*20, i*20);
 		//window->draw(other_sprites[i]);
 	}	
-	for (int i = 0; i < buttons.size(); i++)
+	for (size_t i = 0; i < buttons.size(); i++)
 	{
 		if (buttons[i].needUpdating) buttons[i].setTexture(interractable_textures);
-		window->draw(buttons[i].rect);
+		window->draw(buttons[i].getRect());
 	}
 
 	window->display();
 }
 
-
-
 void Game::loop()
 {
-	initButtons();
-
 	while (window->isOpen())
 	{
 		sf::Event event;
@@ -66,7 +61,6 @@ void Game::loop()
 	}
 }
 
-
 void Game::mouseEventHandler(MouseButtonEvent& ev)
 {
 	//got a custom event. we have to see what type it is, so we can see if there's any button that needs updated
@@ -75,11 +69,9 @@ void Game::mouseEventHandler(MouseButtonEvent& ev)
 	case ButtonEventType::None:
 		break;
 
-
 	case ButtonEventType::Pressed:
 		buttonMouseHandler(eClicked, ev.mousePos);
 		break;
-
 
 	case ButtonEventType::Moved:
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -107,9 +99,7 @@ void Game::handleSfmlEvent(sf::Event event)
 }
 void Game::buttonMouseHandler(int newButtonState,sf::Vector2i v2i)
 {
-
-		checkButtonColision(buttons, v2i, newButtonState);
-
+	checkButtonColision(buttons, v2i, newButtonState);
 }
 sf::Texture Game::loadTexture(std::string PATH)
 {
@@ -149,12 +139,13 @@ void Game::initTextures()
 }
 void Game::initSprites()
 {
-	for (int i = 0; i < other_textures.size(); i++)
+	for (size_t i = 0; i < other_textures.size(); i++)
 	{
 		sf::Sprite temp;
 		temp.setTexture(other_textures[i]);
 		other_sprites.push_back(temp);
 	}
+	prepareSprites();
 }
 void Game::prepareSprites()
 {
@@ -166,17 +157,16 @@ void Game::initButtons()
 {
 	std::pair<float, float> wide(150,50);
 	std::pair<float, float> normal(50,50);
-	Button play = makeButton("play", font, 50, 50, wide ,ePlayID);
+
+	 makeButton("play", font, 50, 50, wide ,ePlayID);
 	 makeButton("", font, 200, 200, normal ,eBackID);
 
 }
 
-
 void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos, int newButtonState)
 {
-	for (int i = 0; i < btns.size(); i++)
+	for (size_t i = 0; i < btns.size(); i++)
 	{
-		
 		if (btns[i].checkBounds(mousepos)) 
 		{
 					//we know the button contains the cursor. We are hovering/holding
@@ -190,28 +180,23 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 	}
 }
 
-Button Game::makeButton(std::string str, sf::Font& font, float x, float y,std::pair<float,float> size,int id)
+//TODO void
+void Game::makeButton(const std::string& str, const sf::Font& font, float x, float y,std::pair<float,float> size,int id)
 {
 	
 	Button btn(str, font, x, y, size.first, size.second,id);
 	buttons.push_back(btn);
-	return btn;
 }
-
-
-
-
-
 
 sf::RenderWindow* Game::makeWindow()
 {
 	//given initial values in case we can't open settings
-
 	int vsync, height, width, frame_limit;
 	//open settings and read parameters
 	std::ifstream read;
 	read.open("Resources\\settings.txt");
 	
+	//make a structure settings
 	std::string x = "Solver";
 	if (read.is_open())
 	{

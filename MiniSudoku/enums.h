@@ -24,6 +24,7 @@ enum other_texture_indexes {
 	eIntroBg
 };
 enum interractable_texture_indexes {
+	//TODO copy sfml name convention
 	eBtn,
 	eHover_btn,
 	eActive_btn,

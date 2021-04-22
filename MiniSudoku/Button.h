@@ -6,17 +6,22 @@
 class Button:public BaseObject,public Text
 {
 	void assignTexture(int id);
-public:
 	int state = 0;
 	sf::RectangleShape rect;
 	int textureIndex = 0;
-
 	bool changeable = true;
-	Button(std::string str, sf::Font& font, float x, float y, float width, float height,int id = -1);
+public:
+	//TODO private
+
+	//
+	Button(const std::string& str, const sf::Font& font, float x, float y, float width, float height,int id = -1);
 	Button();
+
 	void setTexture(std::vector<sf::Texture>& textures);
 	bool needUpdating = true;
 	void textureUpdateHandler(int newButtonState);
+	bool getChangeable();
+	sf::RectangleShape& getRect();
 };
 
 

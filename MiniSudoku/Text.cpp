@@ -1,6 +1,6 @@
 #include "Text.h"
 
-Text::Text(sf::Font& tempofont,std::string &str, float x, float y)
+Text::Text(const sf::Font& tempofont,const std::string &str, float x, float y)
 {
 	this->font = tempofont;
 	this->text.setFont(font);

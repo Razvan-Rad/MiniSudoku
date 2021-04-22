@@ -4,9 +4,11 @@ class Table
 	void initTable();
 
 public:
+	//move outside
 	bool isSafe(int row, int col, int val);
 	bool isSafeRowCol(int row, int col, int val);
 	bool isSafeBox(int boxStartRow, int boxStartCol, int val);
+	//
 	bool emptyBoxes(int& row, int& col);
 	int table[9][9] = { { 3, 0, 6, 5, 0, 8, 4, 0, 0 },
 					   { 5, 2, 0, 0, 0, 0, 0, 0, 0 },
