@@ -1,7 +1,7 @@
 #include "Game.h"
 Game::Game()
 {
-	gamestate = Gamestates::Intro;
+	gamestate = Gamestates::Main;
 	font = makeFont();
 	window = makeWindow();
 	//vreau sa stiu unde pun textura si unde pun sprite-ul
@@ -21,10 +21,7 @@ void Game::render(){
 	switch (gamestate)
 	{
 	case Gamestates::Intro:
-		for (size_t i = 0; i < other_sprites.size(); i++)
-		{
 			window->draw(other_sprites[eIntroBg]);
-		}
 
 		for (size_t i = 0; i < buttons.size(); i++)
 		{
@@ -36,34 +33,50 @@ void Game::render(){
 		break;
 
 	case Gamestates::Main:
-		for (size_t i = 0; i < other_sprites.size(); i++)
-		{
 			window->draw(other_sprites[eBg]);
-		}
+			window->draw(other_sprites[eBgOverlay]);
+
+			for (size_t i = 0; i < buttons.size(); i++)
+			{
+				drawInterractable(buttons[i], eGenerateID);
+				drawInterractable(buttons[i], eSolveID);
+				drawInterractable(buttons[i], eBackID);
+			}
 		break;
 
 	case Gamestates::Solving:
-		for (size_t i = 0; i < other_sprites.size(); i++)
-		{
 			window->draw(other_sprites[eBg]);
-		}
+
+			for (size_t i = 0; i < buttons.size(); i++)
+			{
+				drawInterractable(buttons[i], eGenerateID);
+				drawInterractable(buttons[i], eSolveID);
+				drawInterractable(buttons[i], eBackID);
+			}
 		break;
 
 	case Gamestates::Generating:
-		for (size_t i = 0; i < other_sprites.size(); i++)
+		window->draw(other_sprites[eBg]);
+
+		for (size_t i = 0; i < buttons.size(); i++)
 		{
-			window->draw(other_sprites[eBg]);
+			drawInterractable(buttons[i], eGenerateID);
+			drawInterractable(buttons[i], eSolveID);
+			drawInterractable(buttons[i], eBackID);
 		}
 		break;
 
 	case Gamestates::Settings:
-		for (size_t i = 0; i < other_sprites.size(); i++)
-		{
 			window->draw(other_sprites[eBg]);
-		}
-		break;
 
-	default: //TEMPLATE
+			for (size_t i = 0; i < buttons.size(); i++)
+			{
+
+				drawInterractable(buttons[i], eBackID);
+			}
+		break;
+		
+	default: //DEBUG
 		for (size_t i = 0; i < other_sprites.size(); i++)
 		{
 			other_sprites[i].setPosition(i * 20, i * 20);
@@ -91,7 +104,6 @@ void Game::drawInterractable(Button& btn, int ID)
 		if (btn.getNoise())
 		{
 			btnPressSound.play();
-			std::cout << "made eardrum vibrate at suuch frequencies that it made music\n";
 			btn.resetNoise();
 		}
 		window->draw(btn.getRect()); 
@@ -230,7 +242,10 @@ void Game::initButtons()
 	std::pair<float, float> normal(50, 50);
 	
 	makeButton("PLAY", font, 205 , 400, wide, ePlayID);
-	makeButton("", font, 100, 200, normal, eBackID);
+	makeButton("Generate", font, 145, 20, wide, eGenerateID);
+	makeButton("Solve", font, 300, 20, wide, eSolveID);
+
+	makeButton("", font, 90, 20, normal, eBackID);
 	makeButton("", font, 205, 455, normal, eSettingsID);
 	makeButton("", font, 305, 455, normal, eMediaID);
 

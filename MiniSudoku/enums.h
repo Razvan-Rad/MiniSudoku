@@ -22,7 +22,8 @@ enum buttonState {
 };
 enum other_texture_indexes {
 	eBg,
-	eIntroBg
+	eIntroBg,
+	eBgOverlay
 };
 enum interractable_texture_indexes {
 	//TODO copy sfml name convention

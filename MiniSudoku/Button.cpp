@@ -58,7 +58,6 @@ void Button::resourcesHandler(int newButtonState)
 
 			if (state == 2 && newButtonState == 1) makeNoise = true;
 			state = newButtonState;
-			std::cout << state << " " << newButtonState << std::endl;
 		}
 	}
 }
