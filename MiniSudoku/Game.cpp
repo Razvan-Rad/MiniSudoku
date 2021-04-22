@@ -11,6 +11,7 @@ Game::Game()
 	initTextures();
 	initSprites();
 	initButtons();
+	initSounds();
 }
 
 
@@ -35,19 +36,31 @@ void Game::render(){
 		break;
 
 	case Gamestates::Main:
-
+		for (size_t i = 0; i < other_sprites.size(); i++)
+		{
+			window->draw(other_sprites[eBg]);
+		}
 		break;
 
 	case Gamestates::Solving:
-
+		for (size_t i = 0; i < other_sprites.size(); i++)
+		{
+			window->draw(other_sprites[eBg]);
+		}
 		break;
 
 	case Gamestates::Generating:
-
+		for (size_t i = 0; i < other_sprites.size(); i++)
+		{
+			window->draw(other_sprites[eBg]);
+		}
 		break;
 
 	case Gamestates::Settings:
-
+		for (size_t i = 0; i < other_sprites.size(); i++)
+		{
+			window->draw(other_sprites[eBg]);
+		}
 		break;
 
 	default: //TEMPLATE
@@ -75,6 +88,12 @@ void Game::drawInterractable(Button& btn, int ID)
 	if (btn.getId() == ID)
 	{
 		if (btn.shouldUpdate())btn.setTexture(interractable_textures);
+		if (btn.getNoise())
+		{
+			btnPressSound.play();
+			std::cout << "made eardrum vibrate at suuch frequencies that it made music\n";
+			btn.resetNoise();
+		}
 		window->draw(btn.getRect()); 
 		window->draw(btn.getText());
 	}
@@ -210,10 +229,10 @@ void Game::initButtons()
 	std::pair<float, float> wide(150, 50);
 	std::pair<float, float> normal(50, 50);
 	
-	makeButton("play", font, 205 , 400, wide, ePlayID);
-	makeButton("back", font, 100, 200, normal, eBackID);
-	makeButton("stgs", font, 205, 455, normal, eSettingsID);
-	makeButton("media", font, 305, 455, normal, eMediaID);
+	makeButton("PLAY", font, 205 , 400, wide, ePlayID);
+	makeButton("", font, 100, 200, normal, eBackID);
+	makeButton("", font, 205, 455, normal, eSettingsID);
+	makeButton("", font, 305, 455, normal, eMediaID);
 
 }
 
@@ -224,11 +243,11 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 		if (btns[i].checkBounds(mousepos))
 		{
 			//we know the button contains the cursor. We are hovering/holding
-			btns[i].textureUpdateHandler(newButtonState);
+			btns[i].resourcesHandler(newButtonState);
 		}
 		else
 		{
-			btns[i].textureUpdateHandler(0);
+			btns[i].resourcesHandler(0);
 			//we are outside. we HAVE to set the texture to none
 		}
 	}
@@ -274,4 +293,19 @@ sf::RenderWindow* Game::makeWindow()
 void Game::initTable()
 {
 	sudoku = Table();
+}
+void Game::initSounds()
+{
+	music.openFromFile("Resources\\Sounds\\music.ogg");
+	music.play();
+	music.setLoop(true);
+	music.setVolume(10);
+
+	btnPressSoundBuffer.loadFromFile("Resources\\Sounds\\sound.ogg");
+	btnPressSound.setBuffer(btnPressSoundBuffer);
+	boxPressSound.setVolume(20);
+
+	boxPressSoundBuffer.loadFromFile("Resources\\Sounds\\boxsound.wav");
+	boxPressSound.setBuffer(boxPressSoundBuffer);
+
 }

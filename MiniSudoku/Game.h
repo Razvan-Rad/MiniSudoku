@@ -37,20 +37,27 @@ class Game
 
 	MouseButtonEvent mouseEvent;
 	std::vector<Button> buttons;
-	std::vector<Button> boxes;
+	std::vector<std::vector<Button>> boxes;
+	sf::Texture loadTexture(std::string PATH);
 
 	void mouseEventHandler(MouseButtonEvent& ev);
 	void keyboardEventHandler(KeyboardEvent& ev);
 	void handleSfmlEvent(sf::Event event);
 	void buttonMouseHandler(int newButtonState, sf::Vector2i v2i);
-	sf::Texture loadTexture(std::string PATH);
 	void initTextures();
 	void initSprites();
 	void prepareSprites();
 	void initButtons();
+	void initSounds();
 	void checkButtonColision(std::vector<Button>& btns, sf::Vector2i, int newButtonState);
 	void drawInterractable(Button& btn);
 	void drawInterractable(Button& btn, int ID);
+	sf::SoundBuffer btnPressSoundBuffer;
+	sf::SoundBuffer boxPressSoundBuffer;
+	sf::Sound btnPressSound;
+	sf::Sound boxPressSound;
+	sf::Music music;
+
 public:
 	Game();
 	void loop();

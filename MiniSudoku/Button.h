@@ -11,17 +11,19 @@ class Button:public BaseObject
 	int textureIndex = 0;
 	bool needUpdating = true;
 	bool changeable = true;
-
+	bool makeNoise = false;
 	sf::Text text;
 public:
 	Button( std::string str, const sf::Font& font, float x, float y, float width, float height,int id = -1);
 
 	void setTexture(std::vector<sf::Texture>& textures);
-	void textureUpdateHandler(int newButtonState);
+	void resourcesHandler(int newButtonState);
 	bool getChangeable();
 	sf::Text getText();
 	bool shouldUpdate();
+	bool getNoise();
+	void resetNoise();
 	sf::RectangleShape& getRect();
-	void initText(const std::string& str, const sf::Font& font);
+	void initText(const std::string& str, const sf::Font& font,int width,int i, int j);
 	void initRect();
 };
