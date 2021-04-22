@@ -13,7 +13,9 @@ void Button::assignTexture(ID id)
 	case ID::back:
 		textureIndex = eBack;
 		break;
-
+	case ID::box:
+		textureIndex = eBox;
+		break;
 	case ID::generate:
 	case ID::solve:
 	case ID::play:
@@ -92,7 +94,7 @@ void Button::initText(const std::string& str, const sf::Font& font,int width,int
 	this->text.setFont(font);
 	this->text.setString(str);
 	this->text.setPosition(x, y);
-	text.setFillColor(sf::Color::Red);
+	text.setFillColor(sf::Color::Black);
 
 
 
