@@ -38,9 +38,10 @@ class Game
 
 	std::vector<sf::Sprite> other_sprites;
 
+	MouseButtonEvent mouseEvent;
 	std::vector<Button> buttons;
 	std::vector<Button> boxes;
-
+	std::queue<Button> updateQ;
 
 	void mouseEventHandler(MouseButtonEvent& ev);
 	void keyboardEventHandler(KeyboardEvent& ev);
@@ -51,7 +52,7 @@ class Game
 	void initSprites();
 	void prepareSprites();
 	void initButtons();
-	std::pair<Button*, bool>checkButtonColision(std::vector<Button>& btns, sf::Vector2i);
+	void checkButtonColision(std::vector<Button>& btns, sf::Vector2i, int newButtonState);
 public:
 	Game();
 	void loop();

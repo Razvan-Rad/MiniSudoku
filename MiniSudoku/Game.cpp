@@ -26,6 +26,7 @@ void Game::render()
 	{
 		window->draw(buttons[i].rect);
 	}
+
 	window->display();
 }
 
@@ -41,7 +42,6 @@ void Game::loop()
 		while (window->pollEvent(event))
 		{
 			KeyboardEvent keyboardEvent;
-			MouseButtonEvent mouseEvent;
 			switch (event.type)
 			{
 			case sf::Event::MouseButtonPressed:
@@ -76,19 +76,18 @@ void Game::mouseEventHandler(MouseButtonEvent& ev)
 
 
 	case ButtonEventType::Pressed:
-		std::cout << "p\n";
-
+		buttonMouseHandler(eClicked, ev.mousePos);
 		break;
 
 
 	case ButtonEventType::Moved:
-		buttonMouseHandler(eHovered, ev.mousePos);
-		std::cout << "m\n";
-		break;
-
-
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			buttonMouseHandler(eClicked, ev.mousePos);
+			break;
+		}
 	case ButtonEventType::Released:
-		std::cout << "r\n";
+		buttonMouseHandler(eHovered, ev.mousePos);
 		//make sound
 		break;
 
@@ -107,11 +106,8 @@ void Game::handleSfmlEvent(sf::Event event)
 }
 void Game::buttonMouseHandler(int newButtonState,sf::Vector2i v2i)
 {
-		std::pair<Button*, bool> flaggedButton;
 
-		flaggedButton = checkButtonColision(buttons, v2i);
-		if (flaggedButton.second == true)
-			flaggedButton.first->rect.setTexture(&interractable_textures[2]);
+		checkButtonColision(buttons, v2i, newButtonState);
 
 }
 sf::Texture Game::loadTexture(std::string PATH)
@@ -173,18 +169,22 @@ void Game::initButtons()
 }
 
 
-std::pair<Button*,bool> Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos)
+void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos, int newButtonState)
 {
 	for (int i = 0; i < btns.size(); i++)
 	{
-		if (btns[i].checkBounds(mousepos))
+		
+		if (btns[i].checkBounds(mousepos)) 
 		{
-			return std::make_pair(&btns[i], true);
+					//we know the button contains the cursor. We are hovering/holding
+			btns[i].textureUpdateHandler(newButtonState);
 		}
-		btns[i].rect.setTexture(&interractable_textures[btns[i].textureIndex]);
+		else
+		{
+			btns[i].textureUpdateHandler(0);
+			//we are outside. we HAVE to set the texture to none
+		}
 	}
-	Button x;
-	return std::make_pair(&x, false);
 }
 
 Button Game::makeButton(std::string str, sf::Font& font, float x, float y, float width, float height, int id)
