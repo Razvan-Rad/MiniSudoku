@@ -12,7 +12,8 @@ enum class Gamestates {
 	Solving,
 	Generating,
 	Settings,
-	Other
+	Other,
+	Debug
 };
 enum buttonState {
 	eNone,

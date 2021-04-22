@@ -1,6 +1,7 @@
 #include "Game.h"
 Game::Game()
 {
+	gamestate = Gamestates::Intro;
 	font = makeFont();
 	window = makeWindow();
 	//vreau sa stiu unde pun textura si unde pun sprite-ul
@@ -13,40 +14,70 @@ Game::Game()
 }
 
 
-void Game::render()
-{
+void Game::render(){
 	window->clear();
-	for (size_t i = 0; i < other_sprites.size(); i++)
-	{
-		other_sprites[i].setPosition(i * 20, i * 20);
-		window->draw(other_sprites[i]);
-	}
-	for (size_t i = 0; i < buttons.size(); i++)
-	{
-		if (buttons[i].needUpdating) buttons[i].setTexture(interractable_textures);
-		window->draw(buttons[i].getRect());
-	}
+
 	switch (gamestate)
 	{
 	case Gamestates::Intro:
+		for (size_t i = 0; i < other_sprites.size(); i++)
+		{
+			window->draw(other_sprites[eIntroBg]);
+		}
+
+		for (size_t i = 0; i < buttons.size(); i++)
+		{
+			drawInterractable(buttons[i], ePlayID);
+			drawInterractable(buttons[i], eSettingsID);
+			drawInterractable(buttons[i], eMediaID);
+
+		}
 		break;
+
 	case Gamestates::Main:
+
 		break;
 
 	case Gamestates::Solving:
+
 		break;
 
 	case Gamestates::Generating:
+
 		break;
 
 	case Gamestates::Settings:
+
 		break;
-	case Gamestates::Other:
+
+	default: //TEMPLATE
+		for (size_t i = 0; i < other_sprites.size(); i++)
+		{
+			other_sprites[i].setPosition(i * 20, i * 20);
+			window->draw(other_sprites[i]);
+		}
+		for (size_t i = 0; i < buttons.size(); i++)
+		{
+			drawInterractable(buttons[i]);
+		}
 		break;
 	}
 	window->display();
 }
 
+void Game::drawInterractable(Button& btn)
+{
+	if (btn.shouldUpdate())btn.setTexture(interractable_textures);
+	window->draw(btn.getRect());
+}
+void Game::drawInterractable(Button& btn, int ID)
+{
+	if (btn.getId() == ID)
+	{
+		if (btn.shouldUpdate())btn.setTexture(interractable_textures);
+		window->draw(btn.getRect());
+	}
+}
 void Game::loop()
 {
 	while (window->isOpen())
@@ -118,6 +149,7 @@ void Game::buttonMouseHandler(int newButtonState, sf::Vector2i v2i)
 {
 	checkButtonColision(buttons, v2i, newButtonState);
 }
+
 sf::Texture Game::loadTexture(std::string PATH)
 {
 	sf::Texture texture;
@@ -125,6 +157,7 @@ sf::Texture Game::loadTexture(std::string PATH)
 
 	return texture;
 }
+
 void Game::initTextures()
 {
 	std::ifstream read;
@@ -154,6 +187,7 @@ void Game::initTextures()
 	read.close();
 
 }
+
 void Game::initSprites()
 {
 	for (size_t i = 0; i < other_textures.size(); i++)
@@ -175,8 +209,10 @@ void Game::initButtons()
 	std::pair<float, float> wide(150, 50);
 	std::pair<float, float> normal(50, 50);
 
-	makeButton("play", font, 50, 50, wide, ePlayID);
-	makeButton("", font, 200, 200, normal, eBackID);
+	makeButton("play", font, 205 , 400, wide, ePlayID);
+	makeButton("2", font, 100, 200, normal, eBackID);
+	makeButton("3", font, 205, 455, normal, eSettingsID);
+	makeButton("4", font, 305, 455, normal, eMediaID);
 
 }
 
@@ -214,7 +250,7 @@ sf::RenderWindow* Game::makeWindow()
 	read.open("Resources\\settings.txt");
 
 	//make a structure settings
-	std::string x = "Solver";
+	std::string x = "Mini Sudoku";
 	if (read.is_open())
 	{
 		read >> width >> height;

@@ -53,6 +53,8 @@ class Game
 	void prepareSprites();
 	void initButtons();
 	void checkButtonColision(std::vector<Button>& btns, sf::Vector2i, int newButtonState);
+	void drawInterractable(Button& btn);
+	void drawInterractable(Button& btn, int ID);
 public:
 	Game();
 	void loop();

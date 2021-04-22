@@ -19,11 +19,14 @@ void Button::assignTexture(int id)
 	case ePlayID:
 	default:
 		textureIndex = eBtn;
-		std::cout << "selected default";
 		break;
 	}
 }
 
+sf::Text Button::getText()
+{
+	return text;
+}
 Button::Button(const std::string& str, const sf::Font& font, float x, float y, float width, float height, int id)
 	:BaseObject(x, y, width, height, id)
 	, Text(font, str, x, y)
@@ -32,10 +35,6 @@ Button::Button(const std::string& str, const sf::Font& font, float x, float y, f
 	rect.setSize(sf::Vector2f(width, height));
 	rect.setPosition(x, y);
 
-}
-
-Button::Button() :BaseObject(), Text()
-{
 }
 
 void Button::setTexture(std::vector<sf::Texture>& textures)
@@ -59,6 +58,11 @@ void Button::textureUpdateHandler(int newButtonState)
 bool Button::getChangeable()
 {
 	return changeable;
+}
+
+bool Button::shouldUpdate()
+{
+	return needUpdating;
 }
 
 sf::RectangleShape& Button::getRect()

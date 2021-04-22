@@ -9,6 +9,7 @@ public:
 	int id;
 	sf::IntRect bounds;
 	bool checkBounds(sf::Vector2i& v2i);
+	int getId();
 	BaseObject();
 };
 
