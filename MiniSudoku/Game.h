@@ -56,7 +56,7 @@ class Game
 	sf::Sound btnPressSound;
 	sf::Sound boxPressSound;
 	sf::Music music;
-
+	bool solvingAlgorithmLoop(int table[9][9]);
 public:
 	Game();
 	void loop();

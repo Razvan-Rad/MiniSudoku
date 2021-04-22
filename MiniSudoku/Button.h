@@ -17,15 +17,19 @@ class Button :public BaseObject
 public:
 	Button(std::string str, const sf::Font& font, float x, float y, float width, float height, ID ID = ID::debug);
 
-	Gamestates eventHandler(int newButtonState);
+
 	void setTexture(std::vector<sf::Texture>& textures);
-	Gamestates resourcesHandler(int newButtonState);
-
-	sf::Text getText();
-	sf::RectangleShape& getRect();
-
+	void setText(std::string str);
 	bool shouldUpdate();
+	
+	sf::RectangleShape& getRect();
 	bool getNoise();
-	void resetNoise();
 	bool getChangeable();
+	sf::Text getText();
+
+	void resetNoise();
+	Gamestates eventHandler(int newButtonState);
+	Gamestates resourcesHandler(int newButtonState);
+	void flipChangeable();
+
 };

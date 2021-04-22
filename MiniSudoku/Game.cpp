@@ -50,6 +50,8 @@ void Game::render() {
 		break;
 
 	case Gamestates::Solving:
+		solvingAlgorithmLoop(sudoku.table);
+		printf("finished");
 		window->draw(other_sprites[eBg]);
 		window->draw(other_sprites[eBgOverlay]);
 
@@ -377,4 +379,31 @@ void Game::initSprites()
 		other_sprites.push_back(temp);
 	}
 	prepareSprites();
+}
+
+bool Game::solvingAlgorithmLoop(int table[9][9]) //returns if it's solved or not
+{
+	int row, col;
+	if (!sudoku.emptyBoxes(row, col)) return true;
+	for (int val = 1; val <= 9; val++)
+	{
+		if (sudoku.isSafe(row, col, val))
+		{
+			boxes[row][col].setText(std::to_string(val) );
+			boxes[row][col].flipChangeable();
+			table[row][col] = val;
+
+
+			if (solvingAlgorithmLoop(table))
+				return true;
+			boxes[row][col].flipChangeable();
+			//tru again!
+			table[row][col] = 0;
+			boxes[row][col].setText("0");
+
+		}
+	}
+
+	// trigger for backtracking
+	return false;
 }

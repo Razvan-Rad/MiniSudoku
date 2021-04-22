@@ -59,7 +59,6 @@ Gamestates Button::eventHandler(int newButtonState)
 
 		case ID::solve:
 			return Gamestates::Solving;
-
 		case ID::box:
 			break;
 		case ID::media:
@@ -95,6 +94,11 @@ Gamestates Button::resourcesHandler(int newButtonState)
 	return temp;
 }
 
+void Button::flipChangeable()
+{
+	changeable = !changeable;
+}
+
 bool Button::getChangeable()
 {
 	return changeable;
@@ -118,6 +122,11 @@ bool Button::getNoise()
 sf::RectangleShape& Button::getRect()
 {
 	return rect;
+}
+
+void Button::setText(std::string str)
+{
+	text.setString(str);
 }
 
 void Button::initText(const std::string& str, const sf::Font& font, int width, int i, int j)
