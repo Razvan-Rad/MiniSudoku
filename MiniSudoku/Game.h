@@ -3,14 +3,11 @@
 #include "SFML/System.hpp"
 #include "SFML/Audio.hpp"
 
-
-#include "Text.h"
 #include "Button.h"
 #include "Table.h"
 #include "fstream"
 
 #include <iostream>
-#include <queue>
 #include <string>
 
 #include "enums.h"
@@ -41,7 +38,6 @@ class Game
 	MouseButtonEvent mouseEvent;
 	std::vector<Button> buttons;
 	std::vector<Button> boxes;
-	std::queue<Button> updateQ;
 
 	void mouseEventHandler(MouseButtonEvent& ev);
 	void keyboardEventHandler(KeyboardEvent& ev);
@@ -58,5 +54,6 @@ class Game
 public:
 	Game();
 	void loop();
-	void makeButton(const std::string& str, const sf::Font& font, float x, float y, std::pair<float, float> size, int id);
+	std::string temp = "hey";
+	void makeButton(std::string str, const sf::Font& font, float x, float y, std::pair<float, float> size, int id);
 };

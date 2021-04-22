@@ -76,7 +76,7 @@ void Game::drawInterractable(Button& btn, int ID)
 	{
 		if (btn.shouldUpdate())btn.setTexture(interractable_textures);
 		window->draw(btn.getRect()); 
-		
+		window->draw(btn.getText());
 	}
 }
 void Game::loop()
@@ -209,11 +209,11 @@ void Game::initButtons()
 {
 	std::pair<float, float> wide(150, 50);
 	std::pair<float, float> normal(50, 50);
-
+	
 	makeButton("play", font, 205 , 400, wide, ePlayID);
-	makeButton("2", font, 100, 200, normal, eBackID);
-	makeButton("3", font, 205, 455, normal, eSettingsID);
-	makeButton("4", font, 305, 455, normal, eMediaID);
+	makeButton("back", font, 100, 200, normal, eBackID);
+	makeButton("stgs", font, 205, 455, normal, eSettingsID);
+	makeButton("media", font, 305, 455, normal, eMediaID);
 
 }
 
@@ -234,7 +234,7 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 	}
 }
 
-void Game::makeButton(const std::string& str, const sf::Font& font, float x, float y, std::pair<float, float> size, int id)
+void Game::makeButton(std::string str, const sf::Font& font, float x, float y, std::pair<float, float> size, int id)
 {
 
 	Button btn(str, font, x, y, size.first, size.second, id);

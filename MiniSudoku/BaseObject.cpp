@@ -11,6 +11,5 @@ bool BaseObject::checkBounds(sf::Vector2i& v2i)
 }
 int BaseObject::getId()
 {
-
 	return id;
 }
