@@ -15,6 +15,16 @@ enum class Gamestates {
 	Other,
 	Debug
 };
+enum class ID {
+	play,
+	settings,
+	media,
+	generate,
+	solve,
+	back,
+	box,
+	debug
+};
 enum buttonState {
 	eNone,
 	eHovered,
@@ -47,15 +57,7 @@ enum interractable_texture_indexes {
 	eHover_settings,
 	eActive_settings
 };
-enum class ID {
-	play,
-	settings,
-	media,
-	generate,
-	solve,
-	back,
-	debug
-};
+
 struct MouseButtonEvent {
 	ButtonEventType type;
 	sf::Vector2i mousePos;

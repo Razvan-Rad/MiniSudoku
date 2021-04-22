@@ -11,17 +11,36 @@ Game::Game()
 	initTextures();
 	initSprites();
 	initButtons();
+	initBoxes();
 	initSounds();
 }
 
+void Game::initBoxes()
+{
 
-void Game::render(){
+	std::vector<Button> temp;
+
+	std::pair<float, float> normal(50, 50);
+	for (int j = 0, yoffset = 0, xoffset = 50; j < 9; j++, yoffset += (j % 3 == 0 && j != 0) ? 55 : 50, xoffset = 50) //col iter
+	{
+		boxes.push_back(temp);
+		for (int i = 0; i < 9; i++, xoffset += ((i % 3 == 0 && i != 0) ? 55 : 50)) // row iter
+		{
+			//std::to_string(sudoku.table[j][i]) == "0") ? "" : std::to_string(sudoku.table[j][i])
+			std::string tempstr = (std::to_string(sudoku.table[j][i]) == "0") ? "" : std::to_string(sudoku.table[j][i]);
+			makeButton(tempstr, 
+				font, xoffset, 105 + yoffset, normal, ID::box);
+
+		}
+	}
+}
+void Game::render() {
 	window->clear();
 
 	switch (gamestate)
 	{
 	case Gamestates::Intro:
-			window->draw(other_sprites[eIntroBg]);
+		window->draw(other_sprites[eIntroBg]);
 
 		for (size_t i = 0; i < buttons.size(); i++)
 		{
@@ -33,30 +52,44 @@ void Game::render(){
 		break;
 
 	case Gamestates::Main:
-			window->draw(other_sprites[eBg]);
-			window->draw(other_sprites[eBgOverlay]);
+		window->draw(other_sprites[eBg]);
+		window->draw(other_sprites[eBgOverlay]);
 
-			for (size_t i = 0; i < buttons.size(); i++)
+		for (size_t i = 0; i < buttons.size(); i++)
+		{
+			drawInterractable(buttons[i], ID::generate);
+			drawInterractable(buttons[i], ID::solve);
+			drawInterractable(buttons[i], ID::back);
+		}
+
+
+
+		for (int j = 0; j < 9; j++) //col iter
+		{
+			for (int i = 0; i < 9; i++)
 			{
-				drawInterractable(buttons[i], ID::generate);
-				drawInterractable(buttons[i], ID::solve);
-				drawInterractable(buttons[i], ID::back);
+				drawInterractable(boxes[j][i]);
 			}
+		}
+
+
 		break;
 
 	case Gamestates::Solving:
-			window->draw(other_sprites[eBg]);
+		window->draw(other_sprites[eBg]);
+		window->draw(other_sprites[eBgOverlay]);
 
-			for (size_t i = 0; i < buttons.size(); i++)
-			{
-				drawInterractable(buttons[i], ID::generate);
-				drawInterractable(buttons[i], ID::solve);
-				drawInterractable(buttons[i], ID::back);
-			}
+		for (size_t i = 0; i < buttons.size(); i++)
+		{
+			drawInterractable(buttons[i], ID::generate);
+			drawInterractable(buttons[i], ID::solve);
+			drawInterractable(buttons[i], ID::back);
+		}
 		break;
 
 	case Gamestates::Generating:
 		window->draw(other_sprites[eBg]);
+		window->draw(other_sprites[eBgOverlay]);
 
 		for (size_t i = 0; i < buttons.size(); i++)
 		{
@@ -67,15 +100,16 @@ void Game::render(){
 		break;
 
 	case Gamestates::Settings:
-			window->draw(other_sprites[eBg]);
+		window->draw(other_sprites[eBg]);
+		window->draw(other_sprites[eBgOverlay]);
 
-			for (size_t i = 0; i < buttons.size(); i++)
-			{
+		for (size_t i = 0; i < buttons.size(); i++)
+		{
 
-				drawInterractable(buttons[i], ID::back);
-			}
+			drawInterractable(buttons[i], ID::back);
+		}
 		break;
-		
+
 	default: //DEBUG
 		for (size_t i = 0; i < other_sprites.size(); i++)
 		{
@@ -106,7 +140,7 @@ void Game::drawInterractable(Button& btn, ID ID)
 			btnPressSound.play();
 			btn.resetNoise();
 		}
-		window->draw(btn.getRect()); 
+		window->draw(btn.getRect());
 		window->draw(btn.getText());
 	}
 }
@@ -240,8 +274,8 @@ void Game::initButtons()
 {
 	std::pair<float, float> wide(150, 50);
 	std::pair<float, float> normal(50, 50);
-	
-	makeButton("PLAY", font, 205 , 400, wide, ID::play);
+
+	makeButton("PLAY", font, 205, 400, wide, ID::play);
 	makeButton("Generate", font, 145, 20, wide, ID::generate);
 	makeButton("Solve", font, 300, 20, wide, ID::solve);
 
@@ -270,7 +304,12 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 
 void Game::makeButton(std::string str, const sf::Font& font, float x, float y, std::pair<float, float> size, ID id)
 {
-
+	if (ID::box == id)
+	{
+		Button btn(str, font, x, y, size.first, size.second, id);
+		boxes[boxes.size()-1].push_back(btn);
+		return;
+	}
 	Button btn(str, font, x, y, size.first, size.second, id);
 	buttons.push_back(btn);
 }

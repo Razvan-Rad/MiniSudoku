@@ -48,6 +48,7 @@ class Game
 	void initSprites();
 	void prepareSprites();
 	void initButtons();
+	void initBoxes();
 	void initSounds();
 	void checkButtonColision(std::vector<Button>& btns, sf::Vector2i, int newButtonState);
 	void drawInterractable(Button& btn);
