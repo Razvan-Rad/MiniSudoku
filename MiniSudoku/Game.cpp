@@ -26,7 +26,6 @@ void Game::initBoxes()
 		boxes.push_back(temp);
 		for (int i = 0; i < 9; i++, xoffset += ((i % 3 == 0 && i != 0) ? 55 : 50)) // row iter
 		{
-			//std::to_string(sudoku.table[j][i]) == "0") ? "" : std::to_string(sudoku.table[j][i])
 			std::string tempstr = (std::to_string(sudoku.table[j][i]) == "0") ? "" : std::to_string(sudoku.table[j][i]);
 			makeButton(tempstr,
 				font, xoffset, 105 + yoffset, normal, ID::box);
@@ -83,6 +82,14 @@ void Game::render() {
 			drawInterractable(buttons[i], ID::solve);
 			drawInterractable(buttons[i], ID::back);
 		}
+
+		for (int j = 0; j < 9; j++) //col iter
+		{
+			for (int i = 0; i < 9; i++)
+			{
+				drawInterractable(boxes[j][i], ID::box);
+			}
+		}
 		break;
 
 	case Gamestates::Generating:
@@ -94,6 +101,14 @@ void Game::render() {
 			drawInterractable(buttons[i], ID::generate);
 			drawInterractable(buttons[i], ID::solve);
 			drawInterractable(buttons[i], ID::back);
+		}
+
+		for (int j = 0; j < 9; j++) //col iter
+		{
+			for (int i = 0; i < 9; i++)
+			{
+				drawInterractable(boxes[j][i], ID::box);
+			}
 		}
 		break;
 

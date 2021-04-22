@@ -62,6 +62,5 @@ class Game
 public:
 	Game();
 	void loop();
-	std::string temp = "hey";
 	void makeButton(std::string str, const sf::Font& font, float x, float y, std::pair<float, float> size, ID id);
 };
