@@ -4,7 +4,6 @@ enum class ButtonEventType {
 	Pressed,
 	Released,
 	Moved
-
 };
 enum class Gamestates {
 	Intro,
@@ -13,7 +12,8 @@ enum class Gamestates {
 	Generating,
 	Settings,
 	Other,
-	Debug
+	Media,
+	Debug,
 };
 enum class ID {
 	play,

@@ -13,11 +13,9 @@
 #include "enums.h"
 
 struct KeyboardEvent {
-
 };
 
 struct FlaggedButton {
-
 };
 class Game
 {
@@ -31,7 +29,7 @@ class Game
 	void render();
 
 	std::vector<sf::Texture> interractable_textures;
-	std::vector<sf::Texture> other_textures; 
+	std::vector<sf::Texture> other_textures;
 
 	std::vector<sf::Sprite> other_sprites;
 

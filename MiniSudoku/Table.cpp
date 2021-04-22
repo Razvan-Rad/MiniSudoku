@@ -18,14 +18,13 @@ void Table::initTable()
 
 bool Table::isSafe(int row, int col, int val)
 {
-
 	return !isSafeRowCol(row, col, val)
 		&& !isSafeBox(row - row % 3, col - col % 3, val)
 		&& table[row][col] == 0;
 }
 bool Table::isSafeRowCol(int row, int col, int val)
 {
-	//row 
+	//row
 	for (int col = 0; col < 9; col++)
 		if (table[row][col] == val)
 			return true;
