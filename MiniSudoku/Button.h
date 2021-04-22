@@ -5,7 +5,7 @@
 class Button:public BaseObject
 {
 	int x = 0, y = 0;
-	void assignTexture(int id);
+	void assignTexture(ID id);
 	int state = 0;
 	sf::RectangleShape rect;
 	int textureIndex = 0;
@@ -14,7 +14,7 @@ class Button:public BaseObject
 	bool makeNoise = false;
 	sf::Text text;
 public:
-	Button( std::string str, const sf::Font& font, float x, float y, float width, float height,int id = -1);
+	Button( std::string str, const sf::Font& font, float x, float y, float width, float height,ID ID = ID::debug);
 
 	void setTexture(std::vector<sf::Texture>& textures);
 	void resourcesHandler(int newButtonState);

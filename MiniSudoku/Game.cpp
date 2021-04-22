@@ -25,9 +25,9 @@ void Game::render(){
 
 		for (size_t i = 0; i < buttons.size(); i++)
 		{
-			drawInterractable(buttons[i], ePlayID);
-			drawInterractable(buttons[i], eSettingsID);
-			drawInterractable(buttons[i], eMediaID);
+			drawInterractable(buttons[i], ID::play);
+			drawInterractable(buttons[i], ID::settings);
+			drawInterractable(buttons[i], ID::media);
 
 		}
 		break;
@@ -38,9 +38,9 @@ void Game::render(){
 
 			for (size_t i = 0; i < buttons.size(); i++)
 			{
-				drawInterractable(buttons[i], eGenerateID);
-				drawInterractable(buttons[i], eSolveID);
-				drawInterractable(buttons[i], eBackID);
+				drawInterractable(buttons[i], ID::generate);
+				drawInterractable(buttons[i], ID::solve);
+				drawInterractable(buttons[i], ID::back);
 			}
 		break;
 
@@ -49,9 +49,9 @@ void Game::render(){
 
 			for (size_t i = 0; i < buttons.size(); i++)
 			{
-				drawInterractable(buttons[i], eGenerateID);
-				drawInterractable(buttons[i], eSolveID);
-				drawInterractable(buttons[i], eBackID);
+				drawInterractable(buttons[i], ID::generate);
+				drawInterractable(buttons[i], ID::solve);
+				drawInterractable(buttons[i], ID::back);
 			}
 		break;
 
@@ -60,9 +60,9 @@ void Game::render(){
 
 		for (size_t i = 0; i < buttons.size(); i++)
 		{
-			drawInterractable(buttons[i], eGenerateID);
-			drawInterractable(buttons[i], eSolveID);
-			drawInterractable(buttons[i], eBackID);
+			drawInterractable(buttons[i], ID::generate);
+			drawInterractable(buttons[i], ID::solve);
+			drawInterractable(buttons[i], ID::back);
 		}
 		break;
 
@@ -72,7 +72,7 @@ void Game::render(){
 			for (size_t i = 0; i < buttons.size(); i++)
 			{
 
-				drawInterractable(buttons[i], eBackID);
+				drawInterractable(buttons[i], ID::back);
 			}
 		break;
 		
@@ -96,7 +96,7 @@ void Game::drawInterractable(Button& btn)
 	if (btn.shouldUpdate())btn.setTexture(interractable_textures);
 	window->draw(btn.getRect());
 }
-void Game::drawInterractable(Button& btn, int ID)
+void Game::drawInterractable(Button& btn, ID ID)
 {
 	if (btn.getId() == ID)
 	{
@@ -241,13 +241,13 @@ void Game::initButtons()
 	std::pair<float, float> wide(150, 50);
 	std::pair<float, float> normal(50, 50);
 	
-	makeButton("PLAY", font, 205 , 400, wide, ePlayID);
-	makeButton("Generate", font, 145, 20, wide, eGenerateID);
-	makeButton("Solve", font, 300, 20, wide, eSolveID);
+	makeButton("PLAY", font, 205 , 400, wide, ID::play);
+	makeButton("Generate", font, 145, 20, wide, ID::generate);
+	makeButton("Solve", font, 300, 20, wide, ID::solve);
 
-	makeButton("", font, 90, 20, normal, eBackID);
-	makeButton("", font, 205, 455, normal, eSettingsID);
-	makeButton("", font, 305, 455, normal, eMediaID);
+	makeButton("", font, 90, 20, normal, ID::back);
+	makeButton("", font, 205, 455, normal, ID::settings);
+	makeButton("", font, 305, 455, normal, ID::media);
 
 }
 
@@ -268,7 +268,7 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 	}
 }
 
-void Game::makeButton(std::string str, const sf::Font& font, float x, float y, std::pair<float, float> size, int id)
+void Game::makeButton(std::string str, const sf::Font& font, float x, float y, std::pair<float, float> size, ID id)
 {
 
 	Button btn(str, font, x, y, size.first, size.second, id);

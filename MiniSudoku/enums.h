@@ -47,13 +47,14 @@ enum interractable_texture_indexes {
 	eHover_settings,
 	eActive_settings
 };
-enum ID {
-	ePlayID,
-	eSettingsID,
-	eMediaID,
-	eGenerateID,
-	eSolveID,
-	eBackID
+enum class ID {
+	play,
+	settings,
+	media,
+	generate,
+	solve,
+	back,
+	debug
 };
 struct MouseButtonEvent {
 	ButtonEventType type;

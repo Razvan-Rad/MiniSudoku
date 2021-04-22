@@ -1,22 +1,22 @@
 #include "Button.h"
-void Button::assignTexture(int id)
+void Button::assignTexture(ID id)
 {
 	switch (id)
 	{
 
-	case eSettingsID:
+	case ID::settings:
 		textureIndex = eBack;
 		break;
-	case eMediaID:
+	case ID::media:
 		textureIndex = eBack;
 		break;
-	case eBackID:
+	case ID::back:
 		textureIndex = eBack;
 		break;
 
-	case eGenerateID:
-	case eSolveID:
-	case ePlayID:
+	case ID::generate:
+	case ID::solve:
+	case ID::play:
 	default:
 		textureIndex = eBtn;
 		break;
@@ -24,7 +24,7 @@ void Button::assignTexture(int id)
 }
 
 
-Button::Button( std::string str, const sf::Font& font, float x, float y, float width, float height, int id)
+Button::Button( std::string str, const sf::Font& font, float x, float y, float width, float height, ID id)
 	:BaseObject(x, y, width, height, id)
 {
 	this->x = x;

@@ -51,7 +51,7 @@ class Game
 	void initSounds();
 	void checkButtonColision(std::vector<Button>& btns, sf::Vector2i, int newButtonState);
 	void drawInterractable(Button& btn);
-	void drawInterractable(Button& btn, int ID);
+	void drawInterractable(Button& btn, ID ID);
 	sf::SoundBuffer btnPressSoundBuffer;
 	sf::SoundBuffer boxPressSoundBuffer;
 	sf::Sound btnPressSound;
@@ -62,5 +62,5 @@ public:
 	Game();
 	void loop();
 	std::string temp = "hey";
-	void makeButton(std::string str, const sf::Font& font, float x, float y, std::pair<float, float> size, int id);
+	void makeButton(std::string str, const sf::Font& font, float x, float y, std::pair<float, float> size, ID id);
 };
