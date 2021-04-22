@@ -135,7 +135,7 @@ void Game::drawInterractable(Button& btn, ID ID)
 		if (btn.shouldUpdate())btn.setTexture(interractable_textures);
 		if (btn.getNoise())
 		{
-			if (btn.getId() == ID::box)
+			if (btn.getId() == (ID::box) || btn.getId() == ID::back)
 				boxPressSound.play();
 			else btnPressSound.play();
 			btn.resetNoise();
@@ -214,9 +214,14 @@ void Game::handleSfmlEvent(sf::Event event)
 void Game::buttonMouseHandler(int newButtonState, sf::Vector2i v2i)
 {
 	checkButtonColision(buttons, v2i, newButtonState);
-	for (size_t j = 0; j < boxes.size(); j++)
+	if (gamestate == Gamestates::Solving ||
+		gamestate == Gamestates::Generating ||
+		gamestate == Gamestates::Main)
 	{
-		checkButtonColision(boxes[j], v2i, newButtonState);
+		for (size_t j = 0; j < boxes.size(); j++)
+		{
+			checkButtonColision(boxes[j], v2i, newButtonState);
+		}
 	}
 }
 
@@ -300,7 +305,7 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 		}
 		else
 		{
-			btns[i].resourcesHandler(0);
+			btns[i].resourcesHandler(eNone);
 			//we are outside. we HAVE to set the texture to none
 		}
 	}
