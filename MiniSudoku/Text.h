@@ -4,7 +4,7 @@ class Text
 {
 	int x = 0, y = 0;
 public:
-
+	sf::Texture xy;
 	sf::Font font;
 	std::string string;
 	sf::Text text;

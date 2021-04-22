@@ -75,7 +75,8 @@ void Game::drawInterractable(Button& btn, int ID)
 	if (btn.getId() == ID)
 	{
 		if (btn.shouldUpdate())btn.setTexture(interractable_textures);
-		window->draw(btn.getRect());
+		window->draw(btn.getRect()); 
+		
 	}
 }
 void Game::loop()
@@ -233,7 +234,6 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 	}
 }
 
-//TODO void
 void Game::makeButton(const std::string& str, const sf::Font& font, float x, float y, std::pair<float, float> size, int id)
 {
 
