@@ -24,6 +24,7 @@ void Game::render()
 	}	
 	for (int i = 0; i < buttons.size(); i++)
 	{
+		if (buttons[i].needUpdating) buttons[i].setTexture(interractable_textures);
 		window->draw(buttons[i].rect);
 	}
 
@@ -163,9 +164,11 @@ void Game::prepareSprites()
 }
 void Game::initButtons()
 {
-	Button play = makeButton("play", font, 50, 50, 150, 50, ePlayID);
-	play.rect.setTexture(&interractable_textures[eBtn]);
-	buttons.push_back(play);
+	std::pair<float, float> wide(150,50);
+	std::pair<float, float> normal(50,50);
+	Button play = makeButton("play", font, 50, 50, wide ,ePlayID);
+	 makeButton("", font, 200, 200, normal ,eBackID);
+
 }
 
 
@@ -187,9 +190,11 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 	}
 }
 
-Button Game::makeButton(std::string str, sf::Font& font, float x, float y, float width, float height, int id)
+Button Game::makeButton(std::string str, sf::Font& font, float x, float y,std::pair<float,float> size,int id)
 {
-	Button btn(str, font, x, y, width, height,id);
+	
+	Button btn(str, font, x, y, size.first, size.second,id);
+	buttons.push_back(btn);
 	return btn;
 }
 

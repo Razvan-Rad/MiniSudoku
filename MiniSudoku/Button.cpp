@@ -1,28 +1,48 @@
 #include "Button.h"
-void Button::assignTexture()
+void Button::assignTexture(int id)
 {
 	switch (id)
 	{
 
+	case eSettingsID:
+		textureIndex = eBack;
+		break;
+	case eMediaID:
+		textureIndex = eBack;
+		break;
+	case eBackID:
+		textureIndex = eBack;
+		break;
+
+	case eGenerateID:
+	case eSolveID:
+	case ePlayID:
 	default:
-		textureIndex = eBox;
+		textureIndex = eBtn;
+		std::cout << "selected default";
 		break;
 	}
 }
 
-Button::Button(std::string str, sf::Font &font,float x, float y, float width, float height, int id)
-	:BaseObject(x,y,width,height,id)
-	, Text(font,str,x,y)
+Button::Button(std::string str, sf::Font& font, float x, float y, float width, float height, int id)
+	:BaseObject(x, y, width, height, id)
+	, Text(font, str, x, y)
 {
-	printf("constructor called");
-	assignTexture();
+	assignTexture(id);
 	rect.setSize(sf::Vector2f(width, height));
 	rect.setPosition(x, y);
-	
+
 }
 
 Button::Button() :BaseObject(), Text()
 {
+}
+
+void Button::setTexture(std::vector<sf::Texture>& textures)
+{
+	rect.setTexture(&textures[textureIndex + state]);
+	std::cout << textureIndex + state;
+	needUpdating = false;
 }
 
 void Button::textureUpdateHandler(int newButtonState)
@@ -31,7 +51,6 @@ void Button::textureUpdateHandler(int newButtonState)
 	{
 		if (newButtonState != state)
 		{
-			std::cout << "updated to " << newButtonState;
 			needUpdating = true;
 			state = newButtonState;
 		}

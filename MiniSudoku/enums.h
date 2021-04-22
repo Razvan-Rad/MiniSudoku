@@ -35,6 +35,14 @@ enum interractable_texture_indexes {
 	eBack,
 	eHover_back,
 	eActive_back,
+
+	eMedia,
+	eHover_media,
+	eActive_media,
+
+	eSettings,
+	eHover_settings,
+	eActive_settings
 };
 enum ID {
 	ePlayID,
