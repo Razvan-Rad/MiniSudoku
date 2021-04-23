@@ -1,7 +1,7 @@
 #include "Game.h"
 Game::Game()
 {
-	gamestate = Gamestates::Main;
+	gamestate = Gamestates::Intro;
 	font = makeFont();
 	window = makeWindow();
 	initTable();
@@ -18,87 +18,30 @@ void Game::render() {
 	switch (gamestate)
 	{
 	case Gamestates::Intro:
-		window->draw(other_sprites[eIntroBg]);
-
-		for (size_t i = 0; i < buttons.size(); i++)
-		{
-			drawInterractable(buttons[i], ID::play);
-			drawInterractable(buttons[i], ID::settings);
-			drawInterractable(buttons[i], ID::media);
-		}
+		renderIntro();
 		break;
 
 	case Gamestates::Main:
-		window->draw(other_sprites[eBg]);
-		window->draw(other_sprites[eBgOverlay]);
-
-		for (size_t i = 0; i < buttons.size(); i++)
-		{
-			drawInterractable(buttons[i], ID::generate);
-			drawInterractable(buttons[i], ID::solve);
-			drawInterractable(buttons[i], ID::back);
-		}
-
-		for (int j = 0; j < 9; j++) //col iter
-		{
-			for (int i = 0; i < 9; i++)
-			{
-				drawInterractable(boxes[j][i], ID::box);
-			}
-		}
-
+		renderMain();
 		break;
 
 	case Gamestates::Solving:
-		solvingAlgorithmLoop(sudoku.table);
-		printf("finished");
-		window->draw(other_sprites[eBg]);
-		window->draw(other_sprites[eBgOverlay]);
+		renderMain();
+		gamestate = Gamestates::Main;
+		break;
 
-		for (size_t i = 0; i < buttons.size(); i++)
-		{
-			drawInterractable(buttons[i], ID::generate);
-			drawInterractable(buttons[i], ID::solve);
-			drawInterractable(buttons[i], ID::back);
-		}
-
-		for (int j = 0; j < 9; j++) //col iter
-		{
-			for (int i = 0; i < 9; i++)
-			{
-				drawInterractable(boxes[j][i], ID::box);
-			}
-		}
+	case Gamestates::SolvingAnimation:
+		renderSolvingAnimation(sudoku.table);
+		gamestate = Gamestates::Main;
 		break;
 
 	case Gamestates::Generating:
-		window->draw(other_sprites[eBg]);
-		window->draw(other_sprites[eBgOverlay]);
-
-		for (size_t i = 0; i < buttons.size(); i++)
-		{
-			drawInterractable(buttons[i], ID::generate);
-			drawInterractable(buttons[i], ID::solve);
-			drawInterractable(buttons[i], ID::back);
-		}
-
-		for (int j = 0; j < 9; j++) //col iter
-		{
-			for (int i = 0; i < 9; i++)
-			{
-				drawInterractable(boxes[j][i], ID::box);
-			}
-		}
+		renderGenerating();
 		break;
 
 	case Gamestates::Settings:
-		window->draw(other_sprites[eBg]);
-		window->draw(other_sprites[eBgOverlay]);
+		renderSettings();
 
-		for (size_t i = 0; i < buttons.size(); i++)
-		{
-			drawInterractable(buttons[i], ID::back);
-		}
 		break;
 
 	default:
@@ -139,6 +82,19 @@ void Game::loop()
 		}
 		if(window->hasFocus())render();
 	}
+}
+
+void Game::makeButton(std::string str, const sf::Font& font, float x, float y, std::pair<float, float> size, ID id)
+{
+		if (ID::box == id)
+		{
+			Button btn(str, font, x, y, size.first, size.second, id);
+			boxes[boxes.size() - 1].push_back(btn);
+			return;
+		}
+		Button btn(str, font, x, y, size.first, size.second, id);
+		buttons.push_back(btn);
+	
 }
 
 void Game::mouseEventHandler(MouseButtonEvent& ev)
@@ -208,7 +164,7 @@ void Game::drawInterractable(Button& btn, ID ID)
 
 		if (btn.getNoise())
 		{
-			if (btn.getId() == (ID::box) || btn.getId() == ID::back)
+			if (btn.getId() == ID::box || btn.getId() == ID::back)
 				boxPressSound.play();
 
 			else btnPressSound.play();
@@ -245,17 +201,7 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 	}
 }
 
-void Game::makeButton(std::string str, const sf::Font& font, float x, float y, std::pair<float, float> size, ID id)
-{
-	if (ID::box == id)
-	{
-		Button btn(str, font, x, y, size.first, size.second, id);
-		boxes[boxes.size() - 1].push_back(btn);
-		return;
-	}
-	Button btn(str, font, x, y, size.first, size.second, id);
-	buttons.push_back(btn);
-}
+
 
 sf::RenderWindow* Game::makeWindow()
 {
@@ -380,30 +326,146 @@ void Game::initSprites()
 	}
 	prepareSprites();
 }
-
-bool Game::solvingAlgorithmLoop(int table[9][9]) //returns if it's solved or not
+/*
+bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 {
+	printf("l\n");
+	window->clear();
+	window->draw(other_sprites[eBg]);
+	window->draw(other_sprites[eBgOverlay]);
+
+	for (size_t i = 0; i < buttons.size(); i++)
+	{
+		drawInterractable(buttons[i], ID::generate);
+		drawInterractable(buttons[i], ID::solve);
+		drawInterractable(buttons[i], ID::back);
+	}
+
+	for (int j = 0; j < 9; j++) 
+	{
+		for (int i = 0; i < 9; i++)
+		{
+			drawInterractable(boxes[j][i], ID::box);
+		}
+	}
+	window->display();
+	//TODO rendering, to slow down the algo. put a break point and see how it works and work around it.
 	int row, col;
 	if (!sudoku.emptyBoxes(row, col)) return true;
 	for (int val = 1; val <= 9; val++)
 	{
+
 		if (sudoku.isSafe(row, col, val))
 		{
 			boxes[row][col].setText(std::to_string(val) );
+			boxes[row][col].setState(eHovered);
+			boxes[row][col].setTexture(interractable_textures);
 			boxes[row][col].flipChangeable();
 			table[row][col] = val;
 
 
-			if (solvingAlgorithmLoop(table))
+			if (loopHijacker(table))
 				return true;
 			boxes[row][col].flipChangeable();
 			//tru again!
 			table[row][col] = 0;
-			boxes[row][col].setText("0");
+
+			boxes[row][col].setText("");
+			boxes[row][col].setState(eNone);
+			boxes[row][col].setTexture(interractable_textures);
 
 		}
 	}
 
 	// trigger for backtracking
 	return false;
+}
+*/
+void Game::renderGenerating()
+{
+	window->draw(other_sprites[eBg]);
+	window->draw(other_sprites[eBgOverlay]);
+
+	for (size_t i = 0; i < buttons.size(); i++)
+	{
+		drawInterractable(buttons[i], ID::generate);
+		drawInterractable(buttons[i], ID::solve);
+		drawInterractable(buttons[i], ID::back);
+	}
+
+	for (int j = 0; j < 9; j++) //col iter
+	{
+		for (int i = 0; i < 9; i++)
+		{
+			drawInterractable(boxes[j][i], ID::box);
+		}
+	}
+}
+
+void Game::renderMain()
+{
+	window->draw(other_sprites[eBg]);
+	window->draw(other_sprites[eBgOverlay]);
+
+	for (size_t i = 0; i < buttons.size(); i++)
+	{
+		drawInterractable(buttons[i], ID::generate);
+		drawInterractable(buttons[i], ID::solve);
+		drawInterractable(buttons[i], ID::back);
+	}
+
+	for (int j = 0; j < 9; j++) //col iter
+	{
+		for (int i = 0; i < 9; i++)
+		{
+			drawInterractable(boxes[j][i], ID::box);
+		}
+	}
+
+}
+
+void Game::renderSettings()
+{
+	window->draw(other_sprites[eBg]);
+	window->draw(other_sprites[eBgOverlay]);
+
+	for (size_t i = 0; i < buttons.size(); i++)
+	{
+		drawInterractable(buttons[i], ID::back);
+	}
+}
+
+void Game::renderIntro()
+{
+	window->draw(other_sprites[eIntroBg]);
+
+	for (size_t i = 0; i < buttons.size(); i++)
+	{
+		drawInterractable(buttons[i], ID::play);
+		drawInterractable(buttons[i], ID::settings);
+		drawInterractable(buttons[i], ID::media);
+	}
+}
+
+void Game::renderSolving()
+{
+}
+
+void Game::renderSolvingAnimation(int table[9][9])
+{
+	
+		int count = 0;
+		for (int j = 0; j < 9; j++)
+			for (int i = 0; i < 9; i++)
+			{
+				if (!boxes[j][i].getChangeable())
+				{
+					count++;
+					boxes[j][i].flipChangeable();
+					boxes[i][j].setState(eClicked);
+				}
+				window->display();
+			}
+
+	
 }

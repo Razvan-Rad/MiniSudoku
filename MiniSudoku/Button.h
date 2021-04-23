@@ -20,6 +20,7 @@ public:
 
 	void setTexture(std::vector<sf::Texture>& textures);
 	void setText(std::string str);
+	void setState(int i);
 	bool shouldUpdate();
 	
 	sf::RectangleShape& getRect();

@@ -40,7 +40,7 @@ Button::Button(std::string str, const sf::Font& font, float x, float y, float wi
 void Button::setTexture(std::vector<sf::Texture>& textures)
 {
 	rect.setTexture(&textures[textureIndex + state]);
-	needUpdating = false;
+	needUpdating = false;	
 }
 void Button::resetNoise()
 {
@@ -127,6 +127,11 @@ sf::RectangleShape& Button::getRect()
 void Button::setText(std::string str)
 {
 	text.setString(str);
+}
+
+void Button::setState(int i)
+{
+	state = i;
 }
 
 void Button::initText(const std::string& str, const sf::Font& font, int width, int i, int j)
