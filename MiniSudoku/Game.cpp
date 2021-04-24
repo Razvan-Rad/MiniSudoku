@@ -32,7 +32,7 @@ void Game::render() {
 		break;
 
 	case Gamestates::SolvingAnimation:
-		
+
 		printf("f");
 		renderSolvingAnimation(sudoku.table);
 		gamestate = Gamestates::Main;
@@ -83,21 +83,21 @@ void Game::loop()
 			}
 			mouseEventHandler(mouseEvent);
 		}
-		if(window->hasFocus())render();
+		if (window->hasFocus())render();
 	}
 }
 
 void Game::makeButton(std::string str, const sf::Font& font, float x, float y, std::pair<float, float> size, ID id)
 {
-		if (ID::box == id)
-		{
-			Button btn(str, font, x, y, size.first, size.second, id);
-			boxes[boxes.size() - 1].push_back(btn);
-			return;
-		}
+	if (ID::box == id)
+	{
 		Button btn(str, font, x, y, size.first, size.second, id);
-		buttons.push_back(btn);
-	
+		boxes[boxes.size() - 1].push_back(btn);
+		return;
+	}
+	Button btn(str, font, x, y, size.first, size.second, id);
+	buttons.push_back(btn);
+
 }
 
 void Game::mouseEventHandler(MouseButtonEvent& ev)
@@ -138,13 +138,13 @@ void Game::handleSfmlEvent(sf::Event event)
 
 void Game::buttonMouseHandler(int newButtonState, sf::Vector2i v2i)
 {
-	checkButtonColision(buttons, v2i, newButtonState);
+	checkButtonColision(buttons, v2i, newButtonState, 1);
 	if (gamestate == Gamestates::Solving ||
 		gamestate == Gamestates::Generating ||
-		gamestate == Gamestates::Main){
+		gamestate == Gamestates::Main) {
 		for (size_t j = 0; j < boxes.size(); j++)
 		{
-			checkButtonColision(boxes[j], v2i, newButtonState);
+			checkButtonColision(boxes[j], v2i, newButtonState, 0);
 		}
 	}
 }
@@ -185,21 +185,85 @@ void Game::prepareSprites()
 	other_sprites[eIntroBg].setScale(3.733333333, 4);
 }
 
-void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos, int newButtonState)
+void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos, int newButtonState, bool buttons)
 {
-	for (size_t i = 0; i < btns.size(); i++)
-	{
-		if (btns[i].checkBounds(mousepos))
+	if (!buttons)
+		for (size_t i = 0; i < btns.size(); i++)
 		{
-			//we know the button contains the cursor. We are hovering/holding
-			Gamestates temp = btns[i].resourcesHandler(newButtonState);
 
-			gamestate = (temp == Gamestates::Debug) ? gamestate: temp;
-		}
-		else
-		{
+			if (btns[i].checkBounds(mousepos))
+			{
+				//we know the button contains the cursor. We are hovering/holding
+				Gamestates temp = btns[i].resourcesHandler(newButtonState);
+
+				gamestate = (temp == Gamestates::Debug) ? gamestate : temp;
+				return;
+			}
 			btns[i].resourcesHandler(eNone);
-			//we are outside. we HAVE to set the texture to none
+
+		}
+	else
+	{
+		for (size_t i = 0; i < btns.size(); i++)
+		{
+			bool valid = false;
+			switch (gamestate)
+			{
+			case Gamestates::Main:
+				if (btns[i].id == ID::play || btns[i].id == ID::generate || btns[i].id == ID::solve || btns[i].id == ID::back)
+				{
+					valid = true;
+				}
+				break;
+			case Gamestates::Intro:
+				if (btns[i].id == ID::play || btns[i].id == ID::media || btns[i].id == ID::settings)
+				{
+					printf("y\n");
+					valid = true;
+				}
+				break;
+			case Gamestates::Media:
+				if (btns[i].id == ID::back)
+				{
+					valid = true;
+				}
+				break;
+			case Gamestates::Settings:
+				if (btns[i].id == ID::back)
+				{
+					valid = true;
+				}
+				break;
+
+			default:
+
+				for (size_t i = 0; i < btns.size(); i++)
+				{
+
+					if (btns[i].checkBounds(mousepos))
+					{
+						//we know the button contains the cursor. We are hovering/holding
+						Gamestates temp = btns[i].resourcesHandler(newButtonState);
+
+						gamestate = (temp == Gamestates::Debug) ? gamestate : temp;
+						
+					}
+					else
+					btns[i].resourcesHandler(eNone);
+
+				}
+				break;
+			}
+
+			if (valid && btns[i].checkBounds(mousepos))
+			{
+				//we know the button contains the cursor. We are hovering/holding
+				Gamestates temp = btns[i].resourcesHandler(newButtonState);
+
+				gamestate = (temp == Gamestates::Debug) ? gamestate : temp;
+				return;
+			}
+				btns[i].resourcesHandler(eNone);
 		}
 	}
 }
@@ -344,7 +408,7 @@ bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 	//	drawInterractable(buttons[i], ID::back);
 	//}
 
-	for (int j = 0; j < 9; j++) 
+	for (int j = 0; j < 9; j++)
 	{
 		for (int i = 0; i < 9; i++)
 		{
@@ -360,7 +424,7 @@ bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 
 		if (sudoku.isSafe(row, col, val))
 		{
-			boxes[row][col].setText(std::to_string(val) );
+			boxes[row][col].setText(std::to_string(val));
 			boxes[row][col].setState(eHovered);
 			boxes[row][col].setTexture(interractable_textures);
 			boxes[row][col].flipChangeable();
@@ -456,22 +520,22 @@ void Game::renderSolving()
 
 void Game::renderSolvingAnimation(int table[9][9])
 {
-		int count = 0;
-		for (int j = 0; j < 9; j++)
-			for (int i = 0; i < 9; i++)
+	int count = 0;
+	for (int j = 0; j < 9; j++)
+		for (int i = 0; i < 9; i++)
+		{
+			window->clear();
+			renderMain();
+			if (!boxes[j][i].getChangeable())
 			{
-				window->clear();
-				renderMain();
-				if (!boxes[j][i].getChangeable())
-				{
 
-					count++;
-					boxes[j][i].flipChangeable();
-					boxes[j][i].resourcesHandler(eNone);
-					drawInterractable(boxes[j][i], ID::box);
-				}
-				window->display();
+				count++;
+				boxes[j][i].flipChangeable();
+				boxes[j][i].resourcesHandler(eNone);
+				drawInterractable(boxes[j][i], ID::box);
 			}
+			window->display();
+		}
 
-	
+
 }
