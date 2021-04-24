@@ -20,10 +20,17 @@ void Game::render() {
 	case Gstate::Intro:
 		renderIntro();
 		break;
+
 	case Gstate::IntroAnimation:
 		renderIntroAnimation();
 		gamestate = Gstate::Main;
 		break;
+
+	case Gstate::IntroAnimationReverse:
+		renderIntroAnimationReverse();
+		gamestate = Gstate::Intro;
+		break;
+
 	case Gstate::Main:
 		renderMain();
 		break;
@@ -605,7 +612,7 @@ void Game::renderIntroAnimation()
 
 
 		if (alpha > 0)
-			alpha -= 3;
+			alpha -= 1.7;
 		else if (alpha < 3)
 			alpha = 0;
 
@@ -613,8 +620,40 @@ void Game::renderIntroAnimation()
 	}
 
 	fade = sf::Color(255, 255, 255, 255);
+	/*
 	other_sprites[eIntroBg0].setColor(fade);
 	other_sprites[eIntroBg2].setPosition(0, 0);
 	other_sprites[eIntroBg].setPosition(0, 0);
-	gamestate = Gstate::Main;
+	*/
+}
+
+void Game::renderIntroAnimationReverse()
+{
+	sf::Color fade(255, 255, 255, 0);
+	int alpha = 0;
+	renderMain();
+	for (int i = 0; i < 100; i++)
+	{
+
+		window->clear();
+		renderMain();
+
+		window->draw(other_sprites[eIntroBg]);
+		window->draw(other_sprites[eIntroBg2]);
+		window->draw(other_sprites[eIntroBg0]);
+
+		other_sprites[eIntroBg].move(0, -7.5);
+		other_sprites[eIntroBg2].move(0, 7.5);
+		other_sprites[eIntroBg0].setColor(fade);
+		
+		fade = sf::Color(255, 255, 255, alpha);
+
+		if (i > 50)
+		{
+			if (alpha < 250) alpha += 5;
+			else alpha = 255;
+		}
+
+		window->display();
+	}
 }

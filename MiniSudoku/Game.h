@@ -72,6 +72,7 @@ class Game
 	void renderMedia();
 	void renderSolvingAnimation(int table[9][9]);
 	void renderIntroAnimation();
+	void renderIntroAnimationReverse();
 public:
 	Game();
 	void loop();

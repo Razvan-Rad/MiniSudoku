@@ -16,7 +16,8 @@ enum class Gstate {
 	Debug,
 	SolvingAnimation,
 	NumberPicker,
-	IntroAnimation
+	IntroAnimation,
+	IntroAnimationReverse
 };
 enum class ID {
 	play,

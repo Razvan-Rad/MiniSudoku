@@ -70,7 +70,7 @@ Gstate Button::eventHandler(int newButtonState)
 			return Gstate::Settings;
 
 		case ID::back:
-			return Gstate::Intro;
+			return Gstate::IntroAnimationReverse;
 
 		default:
 			return Gstate::Debug;
