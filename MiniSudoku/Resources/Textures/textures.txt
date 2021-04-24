@@ -13,3 +13,5 @@
 bg
 introbg
 bgoverlay
+introbg2
+introbg0

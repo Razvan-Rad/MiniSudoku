@@ -20,7 +20,10 @@ void Game::render() {
 	case Gstate::Intro:
 		renderIntro();
 		break;
-
+	case Gstate::IntroAnimation:
+		renderIntroAnimation();
+		gamestate = Gstate::Main;
+		break;
 	case Gstate::Main:
 		renderMain();
 		break;
@@ -49,7 +52,7 @@ void Game::render() {
 		renderNumberPicker();
 		break;
 	default:
-		printf("no man should be here..\n");
+		printf("no man should be here\n");
 		break;
 	}
 	window->display();
@@ -210,7 +213,11 @@ void Game::drawInterractable(Button& btn, ID ID)
 void Game::prepareSprites()
 {
 	other_sprites[eBg].setScale(18.75, 18.75);
+
 	other_sprites[eIntroBg].setScale(3.733333333, 4);
+	other_sprites[eIntroBg2].setScale(3.733333333, 4);
+	other_sprites[eIntroBg0].setScale(3.733333333, 4);
+
 	other_sprites[eBgOverlay].setScale(4, 4);
 }
 
@@ -400,7 +407,7 @@ void Game::initTextures()
 			}
 			else //not flagged as interractable
 			{
-				flaggedTextures.push_back(std::make_pair(loadTexture(x + ".jpg"), false));
+				flaggedTextures.push_back(std::make_pair(loadTexture(x + ".png"), false));
 			}
 		}
 	for (int i = 0; i < flaggedTextures.size(); i++)
@@ -531,6 +538,8 @@ void Game::renderSettings()
 void Game::renderIntro()
 {
 	window->draw(other_sprites[eIntroBg]);
+	window->draw(other_sprites[eIntroBg2]);
+	window->draw(other_sprites[eIntroBg0]);
 
 	for (size_t i = 0; i < buttons.size(); i++)
 	{
@@ -573,5 +582,39 @@ void Game::renderSolvingAnimation(int table[9][9])
 			window->display();
 		}
 
+}
 
+void Game::renderIntroAnimation()
+{
+	sf::Color fade(255,255,255,255);
+	int alpha = 255;
+	for(int i = 0; i < 150;i++)
+	{
+		window->clear();
+
+
+		renderMain();
+		window->draw(other_sprites[eIntroBg]);
+		window->draw(other_sprites[eIntroBg2]);
+		window->draw(other_sprites[eIntroBg0]);
+
+		other_sprites[eIntroBg].move(0, 5);
+		other_sprites[eIntroBg2].move(0, -5);
+		fade = sf::Color(255, 255, 255, alpha);
+		other_sprites[eIntroBg0].setColor(fade);
+
+
+		if (alpha > 0)
+			alpha -= 3;
+		else if (alpha < 3)
+			alpha = 0;
+
+		window->display();
+	}
+
+	fade = sf::Color(255, 255, 255, 255);
+	other_sprites[eIntroBg0].setColor(fade);
+	other_sprites[eIntroBg2].setPosition(0, 0);
+	other_sprites[eIntroBg].setPosition(0, 0);
+	gamestate = Gstate::Main;
 }

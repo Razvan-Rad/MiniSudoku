@@ -71,6 +71,7 @@ class Game
 	void renderSolving();
 	void renderMedia();
 	void renderSolvingAnimation(int table[9][9]);
+	void renderIntroAnimation();
 public:
 	Game();
 	void loop();

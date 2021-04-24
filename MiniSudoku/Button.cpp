@@ -52,7 +52,7 @@ Gstate Button::eventHandler(int newButtonState)
 		switch (this->id)
 		{
 		case ID::play:
-			return Gstate::Main;
+			return Gstate::IntroAnimation;
 
 		case ID::generate:
 			return Gstate::Generating;
