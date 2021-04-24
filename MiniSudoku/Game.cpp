@@ -33,7 +33,6 @@ void Game::render() {
 
 	case Gamestates::SolvingAnimation:
 
-		printf("f");
 		renderSolvingAnimation(sudoku.table);
 		gamestate = Gamestates::Main;
 		break;
@@ -41,12 +40,15 @@ void Game::render() {
 	case Gamestates::Generating:
 		renderGenerating();
 		break;
-
+	case Gamestates::Media:
+		renderMedia();
+		break;
 	case Gamestates::Settings:
 		renderSettings();
-
 		break;
-
+	case Gamestates::NumberPicker:
+		renderNumberPicker();
+		break;
 	default:
 		printf("no man should be here..\n");
 		break;
@@ -183,6 +185,7 @@ void Game::prepareSprites()
 {
 	other_sprites[eBg].setScale(18.75, 18.75);
 	other_sprites[eIntroBg].setScale(3.733333333, 4);
+	other_sprites[eBgOverlay].setScale(4, 4);
 }
 
 void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos, int newButtonState, bool buttons)
@@ -218,7 +221,6 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 			case Gamestates::Intro:
 				if (btns[i].id == ID::play || btns[i].id == ID::media || btns[i].id == ID::settings)
 				{
-					printf("y\n");
 					valid = true;
 				}
 				break;
@@ -242,7 +244,6 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 
 					if (btns[i].checkBounds(mousepos))
 					{
-						//we know the button contains the cursor. We are hovering/holding
 						Gamestates temp = btns[i].resourcesHandler(newButtonState);
 
 						gamestate = (temp == Gamestates::Debug) ? gamestate : temp;
@@ -264,6 +265,7 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 				return;
 			}
 				btns[i].resourcesHandler(eNone);
+				//Got  slight High-five for fixing a bug here
 		}
 	}
 }
@@ -314,7 +316,7 @@ void Game::initSounds()
 	music.play();
 	music.setLoop(true);
 
-	btnPressSoundBuffer.loadFromFile("Resources\\Sounds\\sound.ogg");
+	btnPressSoundBuffer.loadFromFile("Resources\\Sounds\\btnsound.ogg");
 	btnPressSound.setBuffer(btnPressSoundBuffer);
 	btnPressSound.setVolume(20);
 
@@ -396,17 +398,10 @@ void Game::initSprites()
 
 bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 {
-	printf("l\n");/*
+	/*
 	window->clear();
 	window->draw(other_sprites[eBg]);
 	window->draw(other_sprites[eBgOverlay]);*/
-
-	//for (size_t i = 0; i < buttons.size(); i++)
-	//{
-	//	drawInterractable(buttons[i], ID::generate);
-	//	drawInterractable(buttons[i], ID::solve);
-	//	drawInterractable(buttons[i], ID::back);
-	//}
 
 	for (int j = 0; j < 9; j++)
 	{
@@ -468,7 +463,10 @@ void Game::renderGenerating()
 		}
 	}
 }
-
+void Game::renderNumberPicker()
+{
+	window->draw(other_sprites[eBg]);
+}
 void Game::renderMain()
 {
 	window->draw(other_sprites[eBg]);
@@ -494,7 +492,7 @@ void Game::renderMain()
 void Game::renderSettings()
 {
 	window->draw(other_sprites[eBg]);
-	window->draw(other_sprites[eBgOverlay]);
+	window->draw(other_sprites[eBgOverlay]);	
 
 	for (size_t i = 0; i < buttons.size(); i++)
 	{
@@ -516,6 +514,16 @@ void Game::renderIntro()
 
 void Game::renderSolving()
 {
+}
+
+void Game::renderMedia()
+{
+	window->draw(other_sprites[eBg]);
+	window->draw(other_sprites[eBgOverlay]);
+	for (size_t i = 0; i < buttons.size(); i++)
+	{
+		drawInterractable(buttons[i], ID::back);
+	}
 }
 
 void Game::renderSolvingAnimation(int table[9][9])

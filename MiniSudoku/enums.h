@@ -14,7 +14,8 @@ enum class Gamestates {
 	Other,
 	Media,
 	Debug,
-	SolvingAnimation
+	SolvingAnimation,
+	NumberPicker
 };
 enum class ID {
 	play,

@@ -61,10 +61,12 @@ class Game
 
 	void render();
 	void renderGenerating();
+	void renderNumberPicker();
 	void renderMain();
 	void renderSettings();
 	void renderIntro();
 	void renderSolving();
+	void renderMedia();
 	void renderSolvingAnimation(int table[9][9]);
 public:
 	Game();

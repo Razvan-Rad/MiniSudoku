@@ -59,13 +59,16 @@ Gamestates Button::eventHandler(int newButtonState)
 
 		case ID::solve:
 			return Gamestates::Solving;
+
 		case ID::box:
-			break;
+			return Gamestates::NumberPicker;
+
 		case ID::media:
 			return Gamestates::Media;
+
 		case ID::settings:
 			return Gamestates::Settings;
-			break;
+
 		case ID::back:
 			return Gamestates::Intro;
 
