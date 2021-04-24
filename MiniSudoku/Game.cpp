@@ -656,4 +656,9 @@ void Game::renderIntroAnimationReverse()
 
 		window->display();
 	}
+	fade = sf::Color(255, 255, 255, 255);
+
+	other_sprites[eIntroBg0].setColor(fade);
+	other_sprites[eIntroBg2].setPosition(0, 0);
+	other_sprites[eIntroBg].setPosition(0, 0);
 }
