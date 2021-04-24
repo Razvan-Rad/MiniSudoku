@@ -26,7 +26,6 @@ void Game::render() {
 		break;
 
 	case Gamestates::Solving:
-		renderMain();
 		loopHijacker(sudoku.table);
 		gamestate = Gamestates::SolvingAnimation;
 		break;
@@ -63,32 +62,38 @@ void Game::loop()
 		sf::Event event;
 		while (window->pollEvent(event))
 		{
-			KeyboardEvent keyboardEvent;
-			switch (event.type)
-			{
-			case sf::Event::MouseButtonPressed:
-				mouseEvent.type = ButtonEventType::Pressed;
-
-				break;
-			case sf::Event::MouseButtonReleased:
-				mouseEvent.type = ButtonEventType::Released;
-				break;
-
-			case sf::Event::MouseMoved:
-				mouseEvent.type = ButtonEventType::Moved;
-				mouseEvent.mousePos = sf::Mouse::getPosition(*window);
-				break;
-			case sf::Event::KeyPressed:
-				gamestate = Gamestates::Intro;
-			default:
-				mouseEvent.type = ButtonEventType::None;
-			}
-			mouseEventHandler(mouseEvent);
+			 handleSfmlMouseEvent(event);
+			 handleSfmlKeyboardEvent(event);
+			
 		}
-		if (window->hasFocus())render();
+		if (window->hasFocus())	render();
 	}
 }
+void Game::handleSfmlKeyboardEvent(sf::Event event)
+{
+	switch (event.type)
+	{
+	case sf::Event::KeyPressed:
+		if (event.key.code == sf::Keyboard::Key::Escape)
+		{
+			if (gamestate != Gamestates::Intro)gamestate = Gamestates::Intro;
+			else window->close();
+		}
 
+		if (event.key.code == sf::Keyboard::Key::Enter)
+		{
+			if (gamestate == Gamestates::Intro)
+			{
+				gamestate = Gamestates::Main;
+			}
+		}
+		break;
+	case sf::Event::Closed:
+		window->close();
+	default:
+		break;
+	}
+}
 void Game::makeButton(std::string str, const sf::Font& font, float x, float y, std::pair<float, float> size, ID id)
 {
 	if (ID::box == id)
@@ -134,8 +139,28 @@ sf::Font Game::makeFont()
 	return temp;
 }
 
-void Game::handleSfmlEvent(sf::Event event)
+void Game::handleSfmlMouseEvent(sf::Event event)
 {
+	switch (event.type)
+	{
+
+	case sf::Event::MouseButtonPressed:
+		mouseEvent.type = ButtonEventType::Pressed;
+
+		break;
+	case sf::Event::MouseButtonReleased:
+		mouseEvent.type = ButtonEventType::Released;
+		break;
+
+	case sf::Event::MouseMoved:
+		mouseEvent.type = ButtonEventType::Moved;
+		mouseEvent.mousePos = sf::Mouse::getPosition(*window);
+		break;
+
+	default:
+		mouseEvent.type = ButtonEventType::None;
+	}
+	mouseEventHandler(mouseEvent);
 }
 
 void Game::buttonMouseHandler(int newButtonState, sf::Vector2i v2i)
@@ -398,7 +423,7 @@ void Game::initSprites()
 
 bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 {
-	/*
+	renderMain(1);/*
 	window->clear();
 	window->draw(other_sprites[eBg]);
 	window->draw(other_sprites[eBgOverlay]);*/
@@ -467,7 +492,7 @@ void Game::renderNumberPicker()
 {
 	window->draw(other_sprites[eBg]);
 }
-void Game::renderMain()
+void Game::renderMain(bool optional)
 {
 	window->draw(other_sprites[eBg]);
 	window->draw(other_sprites[eBgOverlay]);
@@ -478,13 +503,15 @@ void Game::renderMain()
 		drawInterractable(buttons[i], ID::solve);
 		drawInterractable(buttons[i], ID::back);
 	}
-
+	if(!optional)
+	{ 
 	for (int j = 0; j < 9; j++) //col iter
 	{
 		for (int i = 0; i < 9; i++)
 		{
 			drawInterractable(boxes[j][i], ID::box);
 		}
+	}
 	}
 
 }

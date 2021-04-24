@@ -33,13 +33,16 @@ class Game
 	std::vector<sf::Sprite> other_sprites;
 
 	MouseButtonEvent mouseEvent;
+	KeyboardEvent keyboardEvent;
+
 	std::vector<Button> buttons;
 	std::vector<std::vector<Button>> boxes;
 	sf::Texture loadTexture(std::string PATH);
 
 	void mouseEventHandler(MouseButtonEvent& ev);
 	void keyboardEventHandler(KeyboardEvent& ev);
-	void handleSfmlEvent(sf::Event event);
+	void handleSfmlMouseEvent(sf::Event event);
+	void handleSfmlKeyboardEvent(sf::Event event);
 	void buttonMouseHandler(int newButtonState, sf::Vector2i v2i);
 	void initTextures();
 	void solvingAlgorithmAnimation(int table[9][9]);
@@ -62,7 +65,7 @@ class Game
 	void render();
 	void renderGenerating();
 	void renderNumberPicker();
-	void renderMain();
+	void renderMain(bool optional = false);
 	void renderSettings();
 	void renderIntro();
 	void renderSolving();
