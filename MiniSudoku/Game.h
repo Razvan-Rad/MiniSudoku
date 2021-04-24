@@ -21,6 +21,7 @@ class Game
 {
 	Table sudoku;
 	Gstate gamestate;
+	Gstate Pgamestate;
 	sf::RenderWindow* window = NULL;
 	sf::Font font;
 	sf::Font makeFont();

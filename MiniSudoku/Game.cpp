@@ -49,12 +49,15 @@ void Game::render() {
 	case Gstate::Generating:
 		renderGenerating();
 		break;
+
 	case Gstate::Media:
 		renderMedia();
 		break;
+
 	case Gstate::Settings:
 		renderSettings();
 		break;
+
 	case Gstate::NumberPicker:
 		renderNumberPicker();
 		break;
@@ -238,7 +241,7 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 			{
 				//we know the button contains the cursor. We are hovering/holding
 				Gstate temp = btns[i].resourcesHandler(newButtonState);
-
+				Pgamestate = gamestate;
 				gamestate = (temp == Gstate::Debug) ? gamestate : temp;
 				return;
 			}
@@ -285,7 +288,7 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 					if (btns[i].checkBounds(mousepos))
 					{
 						Gstate temp = btns[i].resourcesHandler(newButtonState);
-
+						Pgamestate = gamestate;
 						gamestate = (temp == Gstate::Debug) ? gamestate : temp;
 						
 					}
@@ -299,8 +302,9 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 			if (valid && btns[i].checkBounds(mousepos))
 			{
 				//we know the button contains the cursor. We are hovering/holding
+				Pgamestate = gamestate;
 				Gstate temp = btns[i].resourcesHandler(newButtonState);
-
+				
 				gamestate = (temp == Gstate::Debug) ? gamestate : temp;
 				return;
 			}
@@ -505,7 +509,9 @@ void Game::renderGenerating()
 }
 void Game::renderNumberPicker()
 {
+
 	window->draw(other_sprites[eBg]);
+	window->draw(other_sprites[eBgOverlay]);
 }
 void Game::renderMain(bool optional)
 {
@@ -619,24 +625,37 @@ void Game::renderIntroAnimation()
 		window->display();
 	}
 
-	fade = sf::Color(255, 255, 255, 255);
-	/*
-	other_sprites[eIntroBg0].setColor(fade);
+	other_sprites[eIntroBg0].setColor(sf::Color(255,255,255,255));
 	other_sprites[eIntroBg2].setPosition(0, 0);
 	other_sprites[eIntroBg].setPosition(0, 0);
-	*/
 }
 
 void Game::renderIntroAnimationReverse()
 {
+
 	sf::Color fade(255, 255, 255, 0);
+
+	other_sprites[eIntroBg2].setPosition(0, -750);
+	other_sprites[eIntroBg].setPosition(0, 750);
+	other_sprites[eIntroBg0].setColor(fade);
+
+
 	int alpha = 0;
-	renderMain();
+
 	for (int i = 0; i < 100; i++)
 	{
-
 		window->clear();
-		renderMain();
+		switch (Pgamestate)
+		{
+		case Gstate::Media: renderMedia();
+			break;
+		case Gstate::Settings: renderSettings();
+			break;
+		case Gstate::Main: renderMain();
+			break;
+		case Gstate::NumberPicker: renderNumberPicker();
+			break;
+		}
 
 		window->draw(other_sprites[eIntroBg]);
 		window->draw(other_sprites[eIntroBg2]);
@@ -645,7 +664,7 @@ void Game::renderIntroAnimationReverse()
 		other_sprites[eIntroBg].move(0, -7.5);
 		other_sprites[eIntroBg2].move(0, 7.5);
 		other_sprites[eIntroBg0].setColor(fade);
-		
+
 		fade = sf::Color(255, 255, 255, alpha);
 
 		if (i > 50)
