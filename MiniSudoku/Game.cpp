@@ -234,7 +234,7 @@ void Game::prepareSprites()
 
 void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos, int newButtonState, bool buttons)
 {
-	if (!buttons)
+	if (!buttons)//if it's a box
 		for (size_t i = 0; i < btns.size(); i++)
 		{
 
@@ -249,7 +249,8 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 			btns[i].resourcesHandler(eNone);
 
 		}
-	else
+
+	else 
 	{
 		for (size_t i = 0; i < btns.size(); i++)
 		{
@@ -280,9 +281,14 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 					valid = true;
 				}
 				break;
-
+			case Gstate::NumberPicker:
+				if (btns[i].id == ID::back)
+				{
+					valid = true;
+				}
+				break;
 			default:
-
+				printf("debug GState ");
 				for (size_t i = 0; i < btns.size(); i++)
 				{
 
@@ -376,14 +382,14 @@ void Game::initMedia()
 	std::ifstream read;
 	read.open("Resources\\media.txt");
 	std::string tempstr;
-	std::cout << "loaded";
 	int i = 0;
+	int offset = 100;
 	while (std::getline(read, tempstr))
 	{
 		sf::Text* text = new sf::Text;
 		text->setFont(font);
 		text->setString(tempstr);
-		text->setPosition(0, i * 50);
+		text->setPosition(0, i * 50 + offset);
 		text->setFillColor(sf::Color::Black);
 		texts.push_back(*text);
 		i++;
@@ -477,7 +483,7 @@ bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 		}
 	}
 	window->display();
-	//TODO rendering, to slow down the algo. put a break point and see how it works and work around it.
+
 	int row, col;
 	if (!sudoku.emptyBoxes(row, col)) return true;
 	for (int val = 1; val <= 9; val++)
@@ -511,28 +517,11 @@ bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 
 void Game::renderGenerating()
 {
-	window->draw(other_sprites[eBg]);
-	window->draw(other_sprites[eBgOverlay]);
-
-	for (size_t i = 0; i < buttons.size(); i++)
-	{
-		drawInterractable(buttons[i], ID::generate);
-		drawInterractable(buttons[i], ID::solve);
-		drawInterractable(buttons[i], ID::back);
-	}
-
-	for (int j = 0; j < 9; j++) //col iter
-	{
-		for (int i = 0; i < 9; i++)
-		{
-			drawInterractable(boxes[j][i], ID::box);
-		}
-	}
+	renderMain();
 }
 void Game::renderNumberPicker()
 {
-
-	window->draw(other_sprites[eBg]);
+	renderMain();
 	window->draw(other_sprites[eBgOverlay]);
 }
 void Game::renderMain(bool optional)
@@ -595,6 +584,10 @@ void Game::renderMedia()
 	for (size_t i = 0; i < buttons.size(); i++)
 	{
 		drawInterractable(buttons[i], ID::back);
+	}
+	for (int i = 0; i < texts.size(); i++)
+	{
+		window->draw(texts[i]);
 	}
 }
 
@@ -669,13 +662,24 @@ void Game::renderIntroAnimationReverse()
 		window->clear();
 		switch (Pgamestate)
 		{
-		case Gstate::Media: renderMedia();
+		case Gstate::Media: 
+			renderMedia();
 			break;
-		case Gstate::Settings: renderSettings();
+
+		case Gstate::Settings: 
+			renderSettings();
 			break;
-		case Gstate::Main: renderMain();
+
+		case Gstate::Generating:
+		case Gstate::Solving:
+		case Gstate::Main:
+			renderMain();
 			break;
-		case Gstate::NumberPicker: renderNumberPicker();
+
+		case Gstate::NumberPicker: 
+			renderNumberPicker();
+			break;
+
 			break;
 		}
 
