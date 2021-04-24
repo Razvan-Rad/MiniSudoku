@@ -5,7 +5,7 @@ enum class ButtonEventType {
 	Released,
 	Moved
 };
-enum class Gamestates {
+enum class Gstate {
 	Intro,
 	Main,
 	Solving,

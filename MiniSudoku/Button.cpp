@@ -47,39 +47,39 @@ void Button::resetNoise()
 	makeNoise = false;
 }
 
-Gamestates Button::eventHandler(int newButtonState)
+Gstate Button::eventHandler(int newButtonState)
 {
 		switch (this->id)
 		{
 		case ID::play:
-			return Gamestates::Main;
+			return Gstate::Main;
 
 		case ID::generate:
-			return Gamestates::Generating;
+			return Gstate::Generating;
 
 		case ID::solve:
-			return Gamestates::Solving;
+			return Gstate::Solving;
 
 		case ID::box:
-			return Gamestates::NumberPicker;
+			return Gstate::NumberPicker;
 
 		case ID::media:
-			return Gamestates::Media;
+			return Gstate::Media;
 
 		case ID::settings:
-			return Gamestates::Settings;
+			return Gstate::Settings;
 
 		case ID::back:
-			return Gamestates::Intro;
+			return Gstate::Intro;
 
 		default:
-			return Gamestates::Debug;
+			return Gstate::Debug;
 		}
 	
 }
-Gamestates Button::resourcesHandler(int newButtonState)
+Gstate Button::resourcesHandler(int newButtonState)
 {
-	Gamestates temp = Gamestates::Debug;	
+	Gstate temp = Gstate::Debug;	
 	if (changeable)
 	{
 		if (newButtonState != state)

@@ -1,7 +1,7 @@
 #include "Game.h"
 Game::Game()
 {
-	gamestate = Gamestates::Intro;
+	gamestate = Gstate::Intro;
 	font = makeFont();
 	window = makeWindow();
 	initTable();
@@ -17,35 +17,35 @@ void Game::render() {
 
 	switch (gamestate)
 	{
-	case Gamestates::Intro:
+	case Gstate::Intro:
 		renderIntro();
 		break;
 
-	case Gamestates::Main:
+	case Gstate::Main:
 		renderMain();
 		break;
 
-	case Gamestates::Solving:
+	case Gstate::Solving:
 		loopHijacker(sudoku.table);
-		gamestate = Gamestates::SolvingAnimation;
+		gamestate = Gstate::SolvingAnimation;
 		break;
 
-	case Gamestates::SolvingAnimation:
+	case Gstate::SolvingAnimation:
 
 		renderSolvingAnimation(sudoku.table);
-		gamestate = Gamestates::Main;
+		gamestate = Gstate::Main;
 		break;
 
-	case Gamestates::Generating:
+	case Gstate::Generating:
 		renderGenerating();
 		break;
-	case Gamestates::Media:
+	case Gstate::Media:
 		renderMedia();
 		break;
-	case Gamestates::Settings:
+	case Gstate::Settings:
 		renderSettings();
 		break;
-	case Gamestates::NumberPicker:
+	case Gstate::NumberPicker:
 		renderNumberPicker();
 		break;
 	default:
@@ -64,9 +64,11 @@ void Game::loop()
 		{
 			 handleSfmlMouseEvent(event);
 			 handleSfmlKeyboardEvent(event);
+
+			 mouseEventHandler(mouseEvent);
 			
 		}
-		if (window->hasFocus())	render();
+		render();
 	}
 }
 void Game::handleSfmlKeyboardEvent(sf::Event event)
@@ -76,15 +78,15 @@ void Game::handleSfmlKeyboardEvent(sf::Event event)
 	case sf::Event::KeyPressed:
 		if (event.key.code == sf::Keyboard::Key::Escape)
 		{
-			if (gamestate != Gamestates::Intro)gamestate = Gamestates::Intro;
+			if (gamestate != Gstate::Intro)gamestate = Gstate::Intro;
 			else window->close();
 		}
 
 		if (event.key.code == sf::Keyboard::Key::Enter)
 		{
-			if (gamestate == Gamestates::Intro)
+			if (gamestate == Gstate::Intro)
 			{
-				gamestate = Gamestates::Main;
+				gamestate = Gstate::Main;
 			}
 		}
 		break;
@@ -160,15 +162,14 @@ void Game::handleSfmlMouseEvent(sf::Event event)
 	default:
 		mouseEvent.type = ButtonEventType::None;
 	}
-	mouseEventHandler(mouseEvent);
 }
 
 void Game::buttonMouseHandler(int newButtonState, sf::Vector2i v2i)
 {
 	checkButtonColision(buttons, v2i, newButtonState, 1);
-	if (gamestate == Gamestates::Solving ||
-		gamestate == Gamestates::Generating ||
-		gamestate == Gamestates::Main) {
+	if (gamestate == Gstate::Solving ||
+		gamestate == Gstate::Generating ||
+		gamestate == Gstate::Main) {
 		for (size_t j = 0; j < boxes.size(); j++)
 		{
 			checkButtonColision(boxes[j], v2i, newButtonState, 0);
@@ -222,9 +223,9 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 			if (btns[i].checkBounds(mousepos))
 			{
 				//we know the button contains the cursor. We are hovering/holding
-				Gamestates temp = btns[i].resourcesHandler(newButtonState);
+				Gstate temp = btns[i].resourcesHandler(newButtonState);
 
-				gamestate = (temp == Gamestates::Debug) ? gamestate : temp;
+				gamestate = (temp == Gstate::Debug) ? gamestate : temp;
 				return;
 			}
 			btns[i].resourcesHandler(eNone);
@@ -237,25 +238,25 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 			bool valid = false;
 			switch (gamestate)
 			{
-			case Gamestates::Main:
+			case Gstate::Main:
 				if (btns[i].id == ID::play || btns[i].id == ID::generate || btns[i].id == ID::solve || btns[i].id == ID::back)
 				{
 					valid = true;
 				}
 				break;
-			case Gamestates::Intro:
+			case Gstate::Intro:
 				if (btns[i].id == ID::play || btns[i].id == ID::media || btns[i].id == ID::settings)
 				{
 					valid = true;
 				}
 				break;
-			case Gamestates::Media:
+			case Gstate::Media:
 				if (btns[i].id == ID::back)
 				{
 					valid = true;
 				}
 				break;
-			case Gamestates::Settings:
+			case Gstate::Settings:
 				if (btns[i].id == ID::back)
 				{
 					valid = true;
@@ -269,9 +270,9 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 
 					if (btns[i].checkBounds(mousepos))
 					{
-						Gamestates temp = btns[i].resourcesHandler(newButtonState);
+						Gstate temp = btns[i].resourcesHandler(newButtonState);
 
-						gamestate = (temp == Gamestates::Debug) ? gamestate : temp;
+						gamestate = (temp == Gstate::Debug) ? gamestate : temp;
 						
 					}
 					else
@@ -284,9 +285,9 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 			if (valid && btns[i].checkBounds(mousepos))
 			{
 				//we know the button contains the cursor. We are hovering/holding
-				Gamestates temp = btns[i].resourcesHandler(newButtonState);
+				Gstate temp = btns[i].resourcesHandler(newButtonState);
 
-				gamestate = (temp == Gamestates::Debug) ? gamestate : temp;
+				gamestate = (temp == Gstate::Debug) ? gamestate : temp;
 				return;
 			}
 				btns[i].resourcesHandler(eNone);

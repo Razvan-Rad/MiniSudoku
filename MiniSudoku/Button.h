@@ -29,8 +29,8 @@ public:
 	sf::Text getText();
 
 	void resetNoise();
-	Gamestates eventHandler(int newButtonState);
-	Gamestates resourcesHandler(int newButtonState);
+	Gstate eventHandler(int newButtonState);
+	Gstate resourcesHandler(int newButtonState);
 	void flipChangeable();
 
 };

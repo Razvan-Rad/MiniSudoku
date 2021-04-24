@@ -20,7 +20,7 @@ struct FlaggedButton {
 class Game
 {
 	Table sudoku;
-	Gamestates gamestate;
+	Gstate gamestate;
 	sf::RenderWindow* window = NULL;
 	sf::Font font;
 	sf::Font makeFont();
