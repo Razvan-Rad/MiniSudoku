@@ -38,6 +38,7 @@ class Game
 
 	std::vector<Button> buttons;
 	std::vector<std::vector<Button>> boxes;
+	std::vector<sf::Text> texts;
 	sf::Texture loadTexture(std::string PATH);
 
 	void mouseEventHandler(MouseButtonEvent& ev);
@@ -49,9 +50,12 @@ class Game
 	void solvingAlgorithmAnimation(int table[9][9]);
 	void initSprites();
 	void prepareSprites();
+	
 	void initButtons();
 	void initBoxes();
 	void initSounds();
+	void initMedia();
+
 	void checkButtonColision(std::vector<Button>& btns, sf::Vector2i, int newButtonState, bool buttons = false);
 	//void drawInterractable(Button& btn);
 	void drawInterractable(Button& btn, ID ID);

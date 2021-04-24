@@ -10,6 +10,7 @@ Game::Game()
 	initButtons();
 	initBoxes();
 	initSounds();
+	initMedia();
 }
 
 void Game::render() {
@@ -75,11 +76,11 @@ void Game::loop()
 		sf::Event event;
 		while (window->pollEvent(event))
 		{
-			 handleSfmlMouseEvent(event);
-			 handleSfmlKeyboardEvent(event);
+			handleSfmlMouseEvent(event);
+			handleSfmlKeyboardEvent(event);
 
-			 mouseEventHandler(mouseEvent);
-			
+			mouseEventHandler(mouseEvent);
+
 		}
 		render();
 	}
@@ -290,10 +291,10 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 						Gstate temp = btns[i].resourcesHandler(newButtonState);
 						Pgamestate = gamestate;
 						gamestate = (temp == Gstate::Debug) ? gamestate : temp;
-						
+
 					}
 					else
-					btns[i].resourcesHandler(eNone);
+						btns[i].resourcesHandler(eNone);
 
 				}
 				break;
@@ -304,12 +305,12 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 				//we know the button contains the cursor. We are hovering/holding
 				Pgamestate = gamestate;
 				Gstate temp = btns[i].resourcesHandler(newButtonState);
-				
+
 				gamestate = (temp == Gstate::Debug) ? gamestate : temp;
 				return;
 			}
-				btns[i].resourcesHandler(eNone);
-				//Got  slight High-five for fixing a bug here
+			btns[i].resourcesHandler(eNone);
+			//Got  slight High-five for fixing a bug here
 		}
 	}
 }
@@ -367,6 +368,27 @@ void Game::initSounds()
 	boxPressSoundBuffer.loadFromFile("Resources\\Sounds\\boxsound.wav");
 	boxPressSound.setBuffer(boxPressSoundBuffer);
 	//boxPressSound.setVolume(20);
+}
+
+void Game::initMedia()
+{
+
+	std::ifstream read;
+	read.open("Resources\\media.txt");
+	std::string tempstr;
+	std::cout << "loaded";
+	int i = 0;
+	while (std::getline(read, tempstr))
+	{
+		sf::Text* text = new sf::Text;
+		text->setFont(font);
+		text->setString(tempstr);
+		text->setPosition(0, i * 50);
+		text->setFillColor(sf::Color::Black);
+		texts.push_back(*text);
+		i++;
+	}
+
 }
 
 void Game::initBoxes()
@@ -524,15 +546,15 @@ void Game::renderMain(bool optional)
 		drawInterractable(buttons[i], ID::solve);
 		drawInterractable(buttons[i], ID::back);
 	}
-	if(!optional)
-	{ 
-	for (int j = 0; j < 9; j++) //col iter
+	if (!optional)
 	{
-		for (int i = 0; i < 9; i++)
+		for (int j = 0; j < 9; j++) //col iter
 		{
-			drawInterractable(boxes[j][i], ID::box);
+			for (int i = 0; i < 9; i++)
+			{
+				drawInterractable(boxes[j][i], ID::box);
+			}
 		}
-	}
 	}
 
 }
@@ -540,7 +562,7 @@ void Game::renderMain(bool optional)
 void Game::renderSettings()
 {
 	window->draw(other_sprites[eBg]);
-	window->draw(other_sprites[eBgOverlay]);	
+	window->draw(other_sprites[eBgOverlay]);
 
 	for (size_t i = 0; i < buttons.size(); i++)
 	{
@@ -599,9 +621,9 @@ void Game::renderSolvingAnimation(int table[9][9])
 
 void Game::renderIntroAnimation()
 {
-	sf::Color fade(255,255,255,255);
+	sf::Color fade(255, 255, 255, 255);
 	int alpha = 255;
-	for(int i = 0; i < 150;i++)
+	for (int i = 0; i < 150; i++)
 	{
 		window->clear();
 
@@ -625,7 +647,7 @@ void Game::renderIntroAnimation()
 		window->display();
 	}
 
-	other_sprites[eIntroBg0].setColor(sf::Color(255,255,255,255));
+	other_sprites[eIntroBg0].setColor(sf::Color(255, 255, 255, 255));
 	other_sprites[eIntroBg2].setPosition(0, 0);
 	other_sprites[eIntroBg].setPosition(0, 0);
 }
