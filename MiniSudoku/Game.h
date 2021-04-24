@@ -26,7 +26,7 @@ class Game
 	sf::Font makeFont();
 	sf::RenderWindow* makeWindow();
 	void initTable();
-
+	
 	std::vector<sf::Texture> interractable_textures;
 	std::vector<sf::Texture> other_textures;
 
@@ -71,17 +71,3 @@ public:
 	void loop();
 	void makeButton(std::string str, const sf::Font& font, float x, float y, std::pair<float, float> size, ID id);
 };
-/*
-
-
-
-
-
-
-
-
-
-
-
-
-*/

@@ -27,10 +27,13 @@ void Game::render() {
 
 	case Gamestates::Solving:
 		renderMain();
-		gamestate = Gamestates::Main;
+		loopHijacker(sudoku.table);
+		gamestate = Gamestates::SolvingAnimation;
 		break;
 
 	case Gamestates::SolvingAnimation:
+		
+		printf("f");
 		renderSolvingAnimation(sudoku.table);
 		gamestate = Gamestates::Main;
 		break;
@@ -326,20 +329,20 @@ void Game::initSprites()
 	}
 	prepareSprites();
 }
-/*
+
 bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 {
-	printf("l\n");
+	printf("l\n");/*
 	window->clear();
 	window->draw(other_sprites[eBg]);
-	window->draw(other_sprites[eBgOverlay]);
+	window->draw(other_sprites[eBgOverlay]);*/
 
-	for (size_t i = 0; i < buttons.size(); i++)
-	{
-		drawInterractable(buttons[i], ID::generate);
-		drawInterractable(buttons[i], ID::solve);
-		drawInterractable(buttons[i], ID::back);
-	}
+	//for (size_t i = 0; i < buttons.size(); i++)
+	//{
+	//	drawInterractable(buttons[i], ID::generate);
+	//	drawInterractable(buttons[i], ID::solve);
+	//	drawInterractable(buttons[i], ID::back);
+	//}
 
 	for (int j = 0; j < 9; j++) 
 	{
@@ -380,7 +383,7 @@ bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 	// trigger for backtracking
 	return false;
 }
-*/
+
 void Game::renderGenerating()
 {
 	window->draw(other_sprites[eBg]);
@@ -453,16 +456,19 @@ void Game::renderSolving()
 
 void Game::renderSolvingAnimation(int table[9][9])
 {
-	
 		int count = 0;
 		for (int j = 0; j < 9; j++)
 			for (int i = 0; i < 9; i++)
 			{
+				window->clear();
+				renderMain();
 				if (!boxes[j][i].getChangeable())
 				{
+
 					count++;
 					boxes[j][i].flipChangeable();
-					boxes[i][j].setState(eClicked);
+					boxes[j][i].resourcesHandler(eNone);
+					drawInterractable(boxes[j][i], ID::box);
 				}
 				window->display();
 			}
