@@ -26,7 +26,7 @@ void Game::render() {
 		renderIntroAnimation();
 		for (size_t i = 0; i < buttons.size(); i++)
 		{
-			//makeSound(buttons[i], boxPressSound, btnPressSound);
+			makeSound(buttons[i], boxPressSound, btnPressSound);
 		}
 		gamestate = Gstate::Main;
 		break;
@@ -240,26 +240,31 @@ void Game::prepareSprites()
 	other_sprites[eBgOverlay].setScale(4, 4);
 }
 
-void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos, int newButtonState, bool buttons)
+void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos, int newButtonState, bool isButton)
 {
 	//MY PURPOSE:
 	//i check if the buttons you are trying to push are within reach (in the same gamestate)
-
-	if (!buttons)//if it's a box
+	  
+	if (!isButton)//if it's a box
+	{ 
 		for (size_t i = 0; i < btns.size(); i++)
 		{
 
 			if (btns[i].checkBounds(mousepos))
 			{
 				//we know the button contains the cursor. We are hovering/holding
-				Gstate temp = btns[i].resourcesHandler(newButtonState);
 				Pgamestate = gamestate;
-				gamestate = (temp == Gstate::Debug) ? gamestate : temp;
-				return;
-			}
-			btns[i].resourcesHandler(eNone);
+				Gstate temp = btns[i].resourcesHandler(newButtonState);
 
+				gamestate = (temp == Gstate::Debug) ? gamestate : temp;
+
+			}
+			else
+			{
+				btns[i].resourcesHandler(eNone);
+			}
 		}
+	}
 
 	else 
 	{
@@ -322,7 +327,6 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 				return;
 			}
 			btns[i].resourcesHandler(eNone);
-			//Got  slight High-five for fixing a bug here
 		}
 	}
 }
