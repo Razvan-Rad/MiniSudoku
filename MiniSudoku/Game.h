@@ -59,6 +59,7 @@ class Game
 	void checkButtonColision(std::vector<Button>& btns, sf::Vector2i, int newButtonState, bool buttons = false);
 	//void drawInterractable(Button& btn);
 	void drawInterractable(Button& btn, ID ID);
+	void makeSound(Button& btn, sf::Sound &boxPressSound, sf::Sound &btnPressSound);
 	sf::SoundBuffer btnPressSoundBuffer;
 	sf::SoundBuffer boxPressSoundBuffer;
 	sf::Sound btnPressSound;

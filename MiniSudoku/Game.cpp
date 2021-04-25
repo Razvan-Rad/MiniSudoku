@@ -24,6 +24,10 @@ void Game::render() {
 
 	case Gstate::IntroAnimation:
 		renderIntroAnimation();
+		for (size_t i = 0; i < buttons.size(); i++)
+		{
+			//makeSound(buttons[i], boxPressSound, btnPressSound);
+		}
 		gamestate = Gstate::Main;
 		break;
 
@@ -207,20 +211,24 @@ void Game::drawInterractable(Button& btn, ID ID)
 		if (btn.shouldUpdate())
 			btn.setTexture(interractable_textures);
 
-		if (btn.getNoise())
-		{
-			if (btn.getId() == ID::box || btn.getId() == ID::back)
-				boxPressSound.play();
+		makeSound(btn, boxPressSound, btnPressSound);
 
-			else btnPressSound.play();
-
-			btn.resetNoise();
-		}
 		window->draw(btn.getRect());
 		window->draw(btn.getText());
 	}
 }
+void Game::makeSound(Button& btn, sf::Sound& boxPressSound, sf::Sound& btnPressSound)
+{
+	if (btn.getNoise())
+	{
+		if (btn.getId() == ID::box || btn.getId() == ID::back)
+			boxPressSound.play();
 
+		else btnPressSound.play();
+
+		btn.resetNoise();
+	}
+}
 void Game::prepareSprites()
 {
 	other_sprites[eBg].setScale(18.75, 18.75);
@@ -234,6 +242,9 @@ void Game::prepareSprites()
 
 void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos, int newButtonState, bool buttons)
 {
+	//MY PURPOSE:
+	//i check if the buttons you are trying to push are within reach (in the same gamestate)
+
 	if (!buttons)//if it's a box
 		for (size_t i = 0; i < btns.size(); i++)
 		{
@@ -259,33 +270,28 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 			{
 			case Gstate::Main:
 				if (btns[i].id == ID::play || btns[i].id == ID::generate || btns[i].id == ID::solve || btns[i].id == ID::back)
-				{
 					valid = true;
-				}
+				
 				break;
 			case Gstate::Intro:
 				if (btns[i].id == ID::play || btns[i].id == ID::media || btns[i].id == ID::settings)
-				{
 					valid = true;
-				}
+				
 				break;
 			case Gstate::Media:
-				if (btns[i].id == ID::back)
-				{
+				if (btns[i].id == ID::back)	
 					valid = true;
-				}
+				
 				break;
 			case Gstate::Settings:
-				if (btns[i].id == ID::back)
-				{
+				if (btns[i].id == ID::back) 
 					valid = true;
-				}
+				
 				break;
 			case Gstate::NumberPicker:
 				if (btns[i].id == ID::back)
-				{
 					valid = true;
-				}
+				
 				break;
 			default:
 				printf("debug GState ");
@@ -614,6 +620,10 @@ void Game::renderSolvingAnimation(int table[9][9])
 
 void Game::renderIntroAnimation()
 {
+	for (size_t i = 0; i < buttons.size(); i++)
+	{
+		makeSound(buttons[i], boxPressSound, btnPressSound);
+	}
 	sf::Color fade(255, 255, 255, 255);
 	int alpha = 255;
 	for (int i = 0; i < 150; i++)
