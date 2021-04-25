@@ -10,6 +10,13 @@
 !hover_back
 !active_back
 #
+!media
+!hover_media
+!active_media
+#
+!settings
+!hover_settings
+!active_settings
 bg
 introbg
 bgoverlay

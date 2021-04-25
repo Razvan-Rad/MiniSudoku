@@ -4,10 +4,10 @@ void Button::assignTexture(ID id)
 	switch (id)
 	{
 	case ID::settings:
-		textureIndex = eBack;
+		textureIndex = eBox;
 		break;
 	case ID::media:
-		textureIndex = eBack;
+		textureIndex = eBox;
 		break;
 	case ID::back:
 		textureIndex = eBack;

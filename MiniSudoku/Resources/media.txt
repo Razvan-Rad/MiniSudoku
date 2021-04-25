@@ -1,7 +1,2 @@
 Press a number!
-i love sudoku
-you love sudoku
-he loves sudoku
-we love sudoku
-you love sudoku
-they love sudoku
+This project was created to  experiment with SFML and C++

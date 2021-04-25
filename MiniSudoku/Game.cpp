@@ -455,13 +455,14 @@ void Game::initMedia()
 	read.open("Resources\\media.txt");
 	std::string tempstr;
 	int i = -1;
-	int offset = 100;
+	int offset = 110;
 	while (std::getline(read, tempstr))
 	{
 		sf::Text* text = new sf::Text;
 		text->setFont(font);
 		text->setString(tempstr);
-		text->setPosition(0, i * 50 + offset);
+		text->setPosition(65, i * 50 + offset);
+		text->setCharacterSize(20);
 		text->setFillColor(sf::Color::Black);
 
 		if (i == -1)
