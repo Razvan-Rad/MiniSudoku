@@ -107,9 +107,14 @@ bool Button::getChangeable()
 	return changeable;
 }
 
-sf::Text Button::getText()
+sf::Text& Button::getText()
 {
 	return text;
+}
+
+int Button::getState()
+{
+	return state;
 }
 
 bool Button::shouldUpdate()
@@ -136,7 +141,6 @@ void Button::setState(int i)
 {
 	state = i;
 }
-
 void Button::initText(const std::string& str, const sf::Font& font, int width, int i, int j)
 {
 	this->text.setFont(font);

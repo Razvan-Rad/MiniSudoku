@@ -26,7 +26,8 @@ public:
 	sf::RectangleShape& getRect();
 	bool getNoise();
 	bool getChangeable();
-	sf::Text getText();
+	sf::Text& getText();
+	int getState();
 
 	void resetNoise();
 	Gstate eventHandler(int newButtonState);

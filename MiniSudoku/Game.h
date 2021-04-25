@@ -24,6 +24,7 @@ class Game
 	Gstate Pgamestate;
 	sf::RenderWindow* window = NULL;
 	sf::Font font;
+	int inputNr;
 	sf::Font makeFont();
 	sf::RenderWindow* makeWindow();
 	void initTable();
@@ -43,14 +44,15 @@ class Game
 
 	void mouseEventHandler(MouseButtonEvent& ev);
 	void keyboardEventHandler(KeyboardEvent& ev);
-	void handleSfmlMouseEvent(sf::Event event);
-	void handleSfmlKeyboardEvent(sf::Event event);
+	bool handleSfmlMouseEvent(sf::Event event);
+	int handleSfmlKeyboardEvent(sf::Event event);
 	void buttonMouseHandler(int newButtonState, sf::Vector2i v2i);
 	void initTextures();
 	void solvingAlgorithmAnimation(int table[9][9]);
 	void initSprites();
 	void prepareSprites();
-	
+	void keyboardEventHandlerNr(int nr = 0);
+
 	void initButtons();
 	void initBoxes();
 	void initSounds();

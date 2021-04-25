@@ -24,10 +24,7 @@ void Game::render() {
 
 	case Gstate::IntroAnimation:
 		renderIntroAnimation();
-		for (size_t i = 0; i < buttons.size(); i++)
-		{
-			makeSound(buttons[i], boxPressSound, btnPressSound);
-		}
+
 		gamestate = Gstate::Main;
 		break;
 
@@ -80,16 +77,38 @@ void Game::loop()
 		sf::Event event;
 		while (window->pollEvent(event))
 		{
-			handleSfmlMouseEvent(event);
-			handleSfmlKeyboardEvent(event);
+			if (!handleSfmlMouseEvent(event))
+			{
+				keyboardEventHandlerNr(handleSfmlKeyboardEvent(event));
 
+			}
+
+			
 			mouseEventHandler(mouseEvent);
-
 		}
 		render();
 	}
 }
-void Game::handleSfmlKeyboardEvent(sf::Event event)
+void Game::keyboardEventHandlerNr(int nr)
+{
+	if (gamestate == Gstate::NumberPicker) //if we are in the correct gamestate
+	{
+		for (size_t j = 0; j < boxes.size(); j++) //go through every col
+		{
+			for (size_t i = 0; i < boxes[j].size(); i++) //go through every row
+			{
+				if (boxes[j][i].getState() == eHovered) //if sth is selected
+				{
+					std::string temp = (nr == 0) ? "": std::to_string(nr);
+					sudoku.table[j][i] = nr;
+					boxes[j][i].setText(temp); //set the number
+					gamestate = Gstate::Main;
+				}
+			}
+		}
+	}
+}
+int Game::handleSfmlKeyboardEvent(sf::Event event)
 {
 	switch (event.type)
 	{
@@ -100,11 +119,46 @@ void Game::handleSfmlKeyboardEvent(sf::Event event)
 			else window->close();
 		}
 
-		if (event.key.code == sf::Keyboard::Key::Enter)
+		else if (event.key.code == sf::Keyboard::Key::Enter)
 		{
 			if (gamestate == Gstate::Intro)
 			{
 				gamestate = Gstate::Main;
+			}
+		}
+		else if (event.key.code >= sf::Keyboard::Key::Num0 && event.key.code <= sf::Keyboard::Key::Num9)
+		{
+			switch (event.key.code)
+			{
+			case sf::Keyboard::Key::Num0:
+				return 0;
+				
+			case sf::Keyboard::Key::Num1:
+				return 1 ;
+				
+			case sf::Keyboard::Key::Num2:
+				return 2;
+				
+			case sf::Keyboard::Key::Num3:
+				return 3 ;
+				
+			case sf::Keyboard::Key::Num4:
+				return 4 ;
+				
+			case sf::Keyboard::Key::Num5:
+				return  5;
+
+			case sf::Keyboard::Key::Num6:
+				return 6;
+
+			case sf::Keyboard::Key::Num7:
+				return 7;
+
+			case sf::Keyboard::Key::Num8:
+				return 8;
+
+			case sf::Keyboard::Key::Num9:
+				return 9;
 			}
 		}
 		break;
@@ -113,6 +167,7 @@ void Game::handleSfmlKeyboardEvent(sf::Event event)
 	default:
 		break;
 	}
+	return 0;
 }
 void Game::makeButton(std::string str, const sf::Font& font, float x, float y, std::pair<float, float> size, ID id)
 {
@@ -136,7 +191,8 @@ void Game::mouseEventHandler(MouseButtonEvent& ev)
 		break;
 
 	case ButtonEventType::Pressed:
-		buttonMouseHandler(eClicked, ev.mousePos);
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			buttonMouseHandler(eClicked, ev.mousePos);
 		break;
 
 	case ButtonEventType::Moved:
@@ -159,7 +215,7 @@ sf::Font Game::makeFont()
 	return temp;
 }
 
-void Game::handleSfmlMouseEvent(sf::Event event)
+bool Game::handleSfmlMouseEvent(sf::Event event)
 {
 	switch (event.type)
 	{
@@ -167,24 +223,26 @@ void Game::handleSfmlMouseEvent(sf::Event event)
 	case sf::Event::MouseButtonPressed:
 		mouseEvent.type = ButtonEventType::Pressed;
 
-		break;
+		return 1;
 	case sf::Event::MouseButtonReleased:
 		mouseEvent.type = ButtonEventType::Released;
-		break;
+		return 1;
 
 	case sf::Event::MouseMoved:
 		mouseEvent.type = ButtonEventType::Moved;
 		mouseEvent.mousePos = sf::Mouse::getPosition(*window);
-		break;
+		return 1;
 
 	default:
 		mouseEvent.type = ButtonEventType::None;
+		return 0;
 	}
 }
 
 void Game::buttonMouseHandler(int newButtonState, sf::Vector2i v2i)
 {
 	checkButtonColision(buttons, v2i, newButtonState, 1);
+
 	if (gamestate == Gstate::Solving ||
 		gamestate == Gstate::Generating ||
 		gamestate == Gstate::Main) {
@@ -244,9 +302,9 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 {
 	//MY PURPOSE:
 	//i check if the buttons you are trying to push are within reach (in the same gamestate)
-	  
+
 	if (!isButton)//if it's a box
-	{ 
+	{
 		for (size_t i = 0; i < btns.size(); i++)
 		{
 
@@ -266,55 +324,58 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 		}
 	}
 
-	else 
+	else //we check if the buttons are reachable relative to the gamestate we're in
 	{
 		for (size_t i = 0; i < btns.size(); i++)
 		{
 			bool valid = false;
 			switch (gamestate)
 			{
-			case Gstate::Main:
-				if (btns[i].id == ID::play || btns[i].id == ID::generate || btns[i].id == ID::solve || btns[i].id == ID::back)
+			case Gstate::Main: //generate and solving don't get here. they hijack the loop
+				if (btns[i].id == ID::generate || btns[i].id == ID::solve || btns[i].id == ID::back)
 					valid = true;
-				
+
 				break;
 			case Gstate::Intro:
 				if (btns[i].id == ID::play || btns[i].id == ID::media || btns[i].id == ID::settings)
 					valid = true;
-				
+
 				break;
 			case Gstate::Media:
-				if (btns[i].id == ID::back)	
+				if (btns[i].id == ID::back)
 					valid = true;
-				
+
 				break;
 			case Gstate::Settings:
-				if (btns[i].id == ID::back) 
+				if (btns[i].id == ID::back)
 					valid = true;
-				
+
 				break;
 			case Gstate::NumberPicker:
 				if (btns[i].id == ID::back)
 					valid = true;
-				
+
 				break;
 			default:
-				printf("debug GState ");
-				for (size_t i = 0; i < btns.size(); i++)
-				{
+				/*
+printf("debug GState ");
+for (size_t i = 0; i < btns.size(); i++)
+{
 
-					if (btns[i].checkBounds(mousepos))
-					{
-						Gstate temp = btns[i].resourcesHandler(newButtonState);
-						Pgamestate = gamestate;
-						gamestate = (temp == Gstate::Debug) ? gamestate : temp;
+	if (btns[i].checkBounds(mousepos))
+	{
+		Gstate temp = btns[i].resourcesHandler(newButtonState);
+		Pgamestate = gamestate;
+		gamestate = (temp == Gstate::Debug) ? gamestate : temp;
 
-					}
-					else
-						btns[i].resourcesHandler(eNone);
+	}
+	else
+		btns[i].resourcesHandler(eNone);
 
-				}
+}
+*/
 				break;
+
 			}
 
 			if (valid && btns[i].checkBounds(mousepos))
@@ -676,11 +737,11 @@ void Game::renderIntroAnimationReverse()
 		window->clear();
 		switch (Pgamestate)
 		{
-		case Gstate::Media: 
+		case Gstate::Media:
 			renderMedia();
 			break;
 
-		case Gstate::Settings: 
+		case Gstate::Settings:
 			renderSettings();
 			break;
 
@@ -690,10 +751,8 @@ void Game::renderIntroAnimationReverse()
 			renderMain();
 			break;
 
-		case Gstate::NumberPicker: 
+		case Gstate::NumberPicker:
 			renderNumberPicker();
-			break;
-
 			break;
 		}
 
@@ -704,7 +763,12 @@ void Game::renderIntroAnimationReverse()
 		other_sprites[eIntroBg].move(0, -7.5);
 		other_sprites[eIntroBg2].move(0, 7.5);
 		other_sprites[eIntroBg0].setColor(fade);
+		//for (int i = 0; i < buttons.size(); i++)
+		//{
+		//	buttons[1].getRect().move(0,3);
+		//	buttons[1].getText().move(0,3);
 
+		//}
 		fade = sf::Color(255, 255, 255, alpha);
 
 		if (i > 50)
