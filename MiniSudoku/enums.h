@@ -39,7 +39,8 @@ enum other_texture_indexes {
 	eIntroBg,
 	eBgOverlay,
 	eIntroBg2,
-	eIntroBg0
+	eIntroBg0,
+	eNrPickerOverlay
 };
 enum interractable_texture_indexes {
 	//TODO copy sfml name convention

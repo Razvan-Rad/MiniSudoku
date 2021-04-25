@@ -41,6 +41,7 @@ class Game
 	std::vector<std::vector<Button>> boxes;
 	std::vector<sf::Text> texts;
 	sf::Texture loadTexture(std::string PATH);
+	sf::Text nrSelectorText;
 
 	void mouseEventHandler(MouseButtonEvent& ev);
 	void keyboardEventHandler(KeyboardEvent& ev);

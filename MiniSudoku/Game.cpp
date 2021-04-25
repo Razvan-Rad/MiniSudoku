@@ -296,6 +296,7 @@ void Game::prepareSprites()
 	other_sprites[eIntroBg0].setScale(3.733333333, 4);
 
 	other_sprites[eBgOverlay].setScale(4, 4);
+	other_sprites[eNrPickerOverlay].setScale(4, 4);
 }
 
 void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos, int newButtonState, bool isButton)
@@ -453,7 +454,7 @@ void Game::initMedia()
 	std::ifstream read;
 	read.open("Resources\\media.txt");
 	std::string tempstr;
-	int i = 0;
+	int i = -1;
 	int offset = 100;
 	while (std::getline(read, tempstr))
 	{
@@ -462,7 +463,14 @@ void Game::initMedia()
 		text->setString(tempstr);
 		text->setPosition(0, i * 50 + offset);
 		text->setFillColor(sf::Color::Black);
-		texts.push_back(*text);
+
+		if (i == -1)
+		{
+			nrSelectorText = *text;
+			nrSelectorText.setCharacterSize(30);
+			nrSelectorText.setPosition(190,70);
+		}
+		else texts.push_back(*text);
 		i++;
 	}
 
@@ -593,7 +601,8 @@ void Game::renderGenerating()
 void Game::renderNumberPicker()
 {
 	renderMain();
-	window->draw(other_sprites[eBgOverlay]);
+	window->draw(other_sprites[eNrPickerOverlay]);
+	window->draw(nrSelectorText);
 }
 void Game::renderMain(bool optional)
 {
