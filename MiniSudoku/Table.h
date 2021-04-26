@@ -1,26 +1,44 @@
 #pragma once
+
+#include <iostream>
+#include <algorithm>
+#include <ctime>
+#include <cstdlib>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
+
 class Table
 {
 	void initTable();
-
+	//generating
+	int solnTable[9][9];
+	int val[9];
+	int tablePos[81];
+	int difficultyLevel;
+	bool table_status;
 public:
-	//move outside
+	//solving
 	bool isSafe(int row, int col, int val);
 	bool isSafeRowCol(int row, int col, int val);
 	bool isSafeBox(int boxStartRow, int boxStartCol, int val);
-	//
+	
 	bool emptyBoxes(int& row, int& col);
-	int table[9][9] = { { 3, 0, 6, 5, 0, 8, 4, 0, 0 },
-					   { 5, 2, 0, 0, 0, 0, 0, 0, 0 },
-					   { 0, 8, 7, 0, 0, 0, 0, 3, 1 },
-					   { 0, 0, 3, 0, 1, 0, 0, 8, 0 },
-					   { 9, 0, 0, 8, 6, 3, 0, 0, 5 },
-					   { 0, 5, 0, 0, 9, 0, 6, 0, 0 },
-					   { 1, 3, 0, 0, 0, 0, 2, 5, 0 },
-					   { 0, 0, 0, 0, 0, 0, 0, 7, 4 },
-					   { 0, 0, 5, 2, 0, 6, 3, 0, 0 } };
-
+	int table[9][9];
 
 	Table();
+	Table(std::string table_str, bool row_major = true);
+	void printSudoku();
+
+	//generating
+	void createSeed();
+
+	bool solveTable();
+	std::string getTable();
+	void checkSolvability(int& number);
+	void gensudoku();
+	bool verifyTableStatus();
+	 
 	~Table();
 };

@@ -428,7 +428,14 @@ sf::RenderWindow* Game::makeWindow()
 
 void Game::initTable()
 {
+	srand(time(NULL));
+
 	sudoku = Table();
+
+	sudoku.createSeed();
+
+	sudoku.gensudoku();
+
 }
 
 void Game::initSounds()
@@ -550,7 +557,26 @@ void Game::initSprites()
 
 bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 {
-	renderMain(1);/*
+
+	sf::Event event;
+	while (window->pollEvent(event))
+	{
+		if (event.key.code == sf::Keyboard::Escape)
+		{
+			 sudoku.solveTable();
+			 for (int j = 0; j < 9; j++)
+			 {
+				 for (int i = 0; i < 9; i++)
+				 {
+					 drawInterractable(boxes[j][i], ID::box);
+				 }
+			 }
+
+			 return true;
+		}
+	}
+	renderMain(1);
+	/*
 	window->clear();
 	window->draw(other_sprites[eBg]);
 	window->draw(other_sprites[eBgOverlay]);*/
@@ -597,7 +623,7 @@ bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 
 void Game::renderGenerating()
 {
-	renderMain();
+	initTable();
 }
 void Game::renderNumberPicker()
 {
