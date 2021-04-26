@@ -50,6 +50,8 @@ void Game::render() {
 
 	case Gstate::Generating:
 		renderGenerating();
+
+		gamestate = Gstate::Main;
 		break;
 
 	case Gstate::Media:
@@ -83,7 +85,7 @@ void Game::loop()
 
 			}
 
-			
+
 			mouseEventHandler(mouseEvent);
 		}
 		render();
@@ -91,22 +93,22 @@ void Game::loop()
 }
 void Game::keyboardEventHandlerNr(int nr)
 {
-	if (gamestate == Gstate::NumberPicker) //if we are in the correct gamestate
+	if (gamestate != Gstate::NumberPicker) return; //if we are in the correct gamestate
+
+	for (size_t j = 0; j < boxes.size(); j++) //go through every col
 	{
-		for (size_t j = 0; j < boxes.size(); j++) //go through every col
+		for (size_t i = 0; i < boxes[j].size(); i++) //go through every row
 		{
-			for (size_t i = 0; i < boxes[j].size(); i++) //go through every row
+			if (boxes[j][i].getState() == eHovered) //if sth is selected
 			{
-				if (boxes[j][i].getState() == eHovered) //if sth is selected
-				{
-					std::string temp = (nr == 0) ? "": std::to_string(nr);
-					sudoku.table[j][i] = nr;
-					boxes[j][i].setText(temp); //set the number
-					gamestate = Gstate::Main;
-				}
+				std::string temp = (nr == 0) ? "" : std::to_string(nr);
+				sudoku.table[j][i] = nr;
+				boxes[j][i].setText(temp); //set the number
+				gamestate = Gstate::Main;
 			}
 		}
 	}
+
 }
 int Game::handleSfmlKeyboardEvent(sf::Event event)
 {
@@ -115,8 +117,13 @@ int Game::handleSfmlKeyboardEvent(sf::Event event)
 	case sf::Event::KeyPressed:
 		if (event.key.code == sf::Keyboard::Key::Escape)
 		{
-			if (gamestate != Gstate::Intro)gamestate = Gstate::Intro;
-			else window->close();
+			if (gamestate == Gstate::Intro)
+			{
+				window->close();
+				return;
+			}
+			gamestate = Gstate::Intro;
+
 		}
 
 		else if (event.key.code == sf::Keyboard::Key::Enter)
@@ -132,19 +139,19 @@ int Game::handleSfmlKeyboardEvent(sf::Event event)
 			{
 			case sf::Keyboard::Key::Num0:
 				return 0;
-				
+
 			case sf::Keyboard::Key::Num1:
-				return 1 ;
-				
+				return 1;
+
 			case sf::Keyboard::Key::Num2:
 				return 2;
-				
+
 			case sf::Keyboard::Key::Num3:
-				return 3 ;
-				
+				return 3;
+
 			case sf::Keyboard::Key::Num4:
-				return 4 ;
-				
+				return 4;
+
 			case sf::Keyboard::Key::Num5:
 				return  5;
 
@@ -277,15 +284,16 @@ void Game::drawInterractable(Button& btn, ID ID)
 }
 void Game::makeSound(Button& btn, sf::Sound& boxPressSound, sf::Sound& btnPressSound)
 {
-	if (btn.getNoise())
+	if (!btn.getNoise()) return;
+
+	if (btn.getId() == ID::box || btn.getId() == ID::back)
 	{
-		if (btn.getId() == ID::box || btn.getId() == ID::back)
-			boxPressSound.play();
-
-		else btnPressSound.play();
-
-		btn.resetNoise();
+		boxPressSound.play();
 	}
+	else btnPressSound.play();
+
+	btn.resetNoise();
+
 }
 void Game::prepareSprites()
 {
@@ -476,7 +484,7 @@ void Game::initMedia()
 		{
 			nrSelectorText = *text;
 			nrSelectorText.setCharacterSize(30);
-			nrSelectorText.setPosition(190,70);
+			nrSelectorText.setPosition(190, 70);
 		}
 		else texts.push_back(*text);
 		i++;
@@ -558,23 +566,6 @@ void Game::initSprites()
 bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 {
 
-	sf::Event event;
-	while (window->pollEvent(event))
-	{
-		if (event.key.code == sf::Keyboard::Escape)
-		{
-			 sudoku.solveTable();
-			 for (int j = 0; j < 9; j++)
-			 {
-				 for (int i = 0; i < 9; i++)
-				 {
-					 drawInterractable(boxes[j][i], ID::box);
-				 }
-			 }
-
-			 return true;
-		}
-	}
 	renderMain(1);
 	/*
 	window->clear();
@@ -595,26 +586,25 @@ bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 	for (int val = 1; val <= 9; val++)
 	{
 
-		if (sudoku.isSafe(row, col, val))
-		{
-			boxes[row][col].setText(std::to_string(val));
-			boxes[row][col].setState(eHovered);
-			boxes[row][col].setTexture(interractable_textures);
-			boxes[row][col].flipChangeable();
-			table[row][col] = val;
+		if (!sudoku.isSafe(row, col, val)) continue;
+
+		boxes[row][col].setText(std::to_string(val));
+		boxes[row][col].setState(eHovered);
+		boxes[row][col].setTexture(interractable_textures);
+		boxes[row][col].flipChangeable();
+		table[row][col] = val;
 
 
-			if (loopHijacker(table))
-				return true;
-			boxes[row][col].flipChangeable();
-			//tru again!
-			table[row][col] = 0;
+		if (loopHijacker(table))
+			return true;
+		boxes[row][col].flipChangeable();
+		//tru again!
+		table[row][col] = 0;
 
-			boxes[row][col].setText("");
-			boxes[row][col].setState(eNone);
-			boxes[row][col].setTexture(interractable_textures);
+		boxes[row][col].setText("");
+		boxes[row][col].setState(eNone);
+		boxes[row][col].setTexture(interractable_textures);
 
-		}
 	}
 
 	// trigger for backtracking
@@ -623,7 +613,19 @@ bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 
 void Game::renderGenerating()
 {
-	initTable();
+
+	Table newsudoku = Table();
+	sudoku = newsudoku;
+	sudoku.createSeed();
+
+	sudoku.gensudoku();
+	for (int j = 0; j < 9; j++)
+		for (int i = 0; i < 9; i++)
+		{
+			std::string tempstr = (std::to_string(sudoku.table[j][i]) == "0") ? "" : std::to_string(sudoku.table[j][i]);
+			boxes[j][i].setText(tempstr);
+		}
+
 }
 void Game::renderNumberPicker()
 {
