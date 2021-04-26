@@ -120,7 +120,7 @@ int Game::handleSfmlKeyboardEvent(sf::Event event)
 			if (gamestate == Gstate::Intro)
 			{
 				window->close();
-				return;
+				return 0;
 			}
 			gamestate = Gstate::Intro;
 
@@ -131,6 +131,7 @@ int Game::handleSfmlKeyboardEvent(sf::Event event)
 			if (gamestate == Gstate::Intro)
 			{
 				gamestate = Gstate::Main;
+				return 0;
 			}
 		}
 		else if (event.key.code >= sf::Keyboard::Key::Num0 && event.key.code <= sf::Keyboard::Key::Num9)
@@ -168,13 +169,12 @@ int Game::handleSfmlKeyboardEvent(sf::Event event)
 				return 9;
 			}
 		}
-		break;
+		return 0;
 	case sf::Event::Closed:
 		window->close();
 	default:
-		break;
+		return 0;
 	}
-	return 0;
 }
 void Game::makeButton(std::string str, const sf::Font& font, float x, float y, std::pair<float, float> size, ID id)
 {
@@ -289,9 +289,10 @@ void Game::makeSound(Button& btn, sf::Sound& boxPressSound, sf::Sound& btnPressS
 	if (btn.getId() == ID::box || btn.getId() == ID::back)
 	{
 		boxPressSound.play();
+		btn.resetNoise();
+		return;
 	}
-	else btnPressSound.play();
-
+	btnPressSound.play();
 	btn.resetNoise();
 
 }
@@ -317,56 +318,57 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 		for (size_t i = 0; i < btns.size(); i++)
 		{
 
-			if (btns[i].checkBounds(mousepos))
+			if (!btns[i].checkBounds(mousepos))
 			{
-				//we know the button contains the cursor. We are hovering/holding
-				Pgamestate = gamestate;
-				Gstate temp = btns[i].resourcesHandler(newButtonState);
 
-				gamestate = (temp == Gstate::Debug) ? gamestate : temp;
-
-			}
-			else
-			{
 				btns[i].resourcesHandler(eNone);
-			}
+				continue;
+			}//we know the button contains the cursor. We are hovering/holding
+			Pgamestate = gamestate;
+			Gstate temp = btns[i].resourcesHandler(newButtonState);
+
+			gamestate = (temp == Gstate::Debug) ? gamestate : temp;
+
+
+
+
 		}
+		return;
 	}
 
-	else //we check if the buttons are reachable relative to the gamestate we're in
+
+	for (size_t i = 0; i < btns.size(); i++)
 	{
-		for (size_t i = 0; i < btns.size(); i++)
+		bool valid = false;
+		switch (gamestate)
 		{
-			bool valid = false;
-			switch (gamestate)
-			{
-			case Gstate::Main: //generate and solving don't get here. they hijack the loop
-				if (btns[i].id == ID::generate || btns[i].id == ID::solve || btns[i].id == ID::back)
-					valid = true;
+		case Gstate::Main: //generate and solving don't get here. they hijack the loop
+			if (btns[i].id == ID::generate || btns[i].id == ID::solve || btns[i].id == ID::back)
+				valid = true;
 
-				break;
-			case Gstate::Intro:
-				if (btns[i].id == ID::play || btns[i].id == ID::media || btns[i].id == ID::settings)
-					valid = true;
+			break;
+		case Gstate::Intro:
+			if (btns[i].id == ID::play || btns[i].id == ID::media || btns[i].id == ID::settings)
+				valid = true;
 
-				break;
-			case Gstate::Media:
-				if (btns[i].id == ID::back)
-					valid = true;
+			break;
+		case Gstate::Media:
+			if (btns[i].id == ID::back)
+				valid = true;
 
-				break;
-			case Gstate::Settings:
-				if (btns[i].id == ID::back)
-					valid = true;
+			break;
+		case Gstate::Settings:
+			if (btns[i].id == ID::back)
+				valid = true;
 
-				break;
-			case Gstate::NumberPicker:
-				if (btns[i].id == ID::back)
-					valid = true;
+			break;
+		case Gstate::NumberPicker:
+			if (btns[i].id == ID::back)
+				valid = true;
 
-				break;
-			default:
-				/*
+			break;
+		default:
+			/*
 printf("debug GState ");
 for (size_t i = 0; i < btns.size(); i++)
 {
@@ -383,22 +385,22 @@ for (size_t i = 0; i < btns.size(); i++)
 
 }
 */
-				break;
+			break;
 
-			}
-
-			if (valid && btns[i].checkBounds(mousepos))
-			{
-				//we know the button contains the cursor. We are hovering/holding
-				Pgamestate = gamestate;
-				Gstate temp = btns[i].resourcesHandler(newButtonState);
-
-				gamestate = (temp == Gstate::Debug) ? gamestate : temp;
-				return;
-			}
-			btns[i].resourcesHandler(eNone);
 		}
+
+		if (valid && btns[i].checkBounds(mousepos))
+		{
+			//we know the button contains the cursor. We are hovering/holding
+			Pgamestate = gamestate;
+			Gstate temp = btns[i].resourcesHandler(newButtonState);
+
+			gamestate = (temp == Gstate::Debug) ? gamestate : temp;
+			return;
+		}
+		btns[i].resourcesHandler(eNone);
 	}
+
 }
 
 
@@ -480,13 +482,14 @@ void Game::initMedia()
 		text->setCharacterSize(20);
 		text->setFillColor(sf::Color::Black);
 
-		if (i == -1)
+		if (i != -1)
 		{
-			nrSelectorText = *text;
-			nrSelectorText.setCharacterSize(30);
-			nrSelectorText.setPosition(190, 70);
+			texts.push_back(*text);
 		}
-		else texts.push_back(*text);
+		nrSelectorText = *text;
+		nrSelectorText.setCharacterSize(30);
+		nrSelectorText.setPosition(190, 70);
+
 		i++;
 	}
 
@@ -532,22 +535,26 @@ void Game::initTextures()
 	std::vector<std::pair<sf::Texture, bool>> flaggedTextures;
 
 	while (getline(read, x))
-		if (x[0] != '#')
+	{
+		if (x[0] == '#') continue;
+
+		if (x[0] != '!') // Flagged as interractable, add bool
 		{
-			if (x[0] == '!') // Flagged as interractable, add bool
-			{
-				x.erase(0, 1);
-				flaggedTextures.push_back(std::make_pair(loadTexture(x + ".jpg"), true));
-			}
-			else //not flagged as interractable
-			{
-				flaggedTextures.push_back(std::make_pair(loadTexture(x + ".png"), false));
-			}
+			flaggedTextures.push_back(std::make_pair(loadTexture(x + ".png"), false));
+			continue;
 		}
+		x.erase(0, 1);
+		flaggedTextures.push_back(std::make_pair(loadTexture(x + ".jpg"), true));
+
+	}
 	for (int i = 0; i < flaggedTextures.size(); i++)
 	{
-		if (flaggedTextures[i].second == true) interractable_textures.push_back(flaggedTextures[i].first);
-		else  other_textures.push_back(flaggedTextures[i].first);
+		if (!flaggedTextures[i].second)
+		{
+			other_textures.push_back(flaggedTextures[i].first);
+			continue;
+		}
+		interractable_textures.push_back(flaggedTextures[i].first);
 	}
 	read.close();
 }
