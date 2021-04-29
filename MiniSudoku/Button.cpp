@@ -75,6 +75,9 @@ Gstate Button::eventHandler(int newButtonState)
 		case ID::back:
 			return Gstate::IntroAnimationReverse;
 
+		case ID::fastForward:
+			return Gstate::Main;
+
 		default:
 			return Gstate::Debug;
 		}

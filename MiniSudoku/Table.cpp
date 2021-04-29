@@ -65,7 +65,7 @@ void Table::createSeed()
     {
         for (int j = 0; j < 9; j++)
         {
-            solnTable[i][j] = table[i][j];
+            solvedTable[i][j] = table[i][j];
         }
     }
 }
@@ -275,5 +275,14 @@ void Table::gensudoku()
         {
             table[x][y] = temp;
         }
+    }
+}
+void Table::instantSolve()
+{
+    for(int j = 0; j < 9; j++)
+    for (int i = 0; i < 9; i++)
+    {
+        std::cout << table[i][j] << solvedTable[i][j] << std::endl;
+        table[i][j] = solvedTable[i][j];
     }
 }

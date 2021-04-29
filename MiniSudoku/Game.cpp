@@ -266,9 +266,7 @@ void Game::buttonMouseHandler(int newButtonState, sf::Vector2i v2i)
 {
 	checkButtonColision(buttons, v2i, newButtonState, 1);
 
-	if (gamestate == Gstate::Solving ||
-		gamestate == Gstate::Generating ||
-		gamestate == Gstate::Main) {
+	if (gamestate == Gstate::Main) {
 		for (size_t j = 0; j < boxes.size(); j++)
 		{
 			checkButtonColision(boxes[j], v2i, newButtonState, 0);
@@ -348,6 +346,8 @@ void Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos,
 				continue;
 			}//we know the button contains the cursor. We are hovering/holding
 			Pgamestate = gamestate;
+
+
 			Gstate temp = btns[i].resourcesHandler(newButtonState);
 
 			gamestate = (temp == Gstate::Debug) ? gamestate : temp;
@@ -392,7 +392,9 @@ void Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos,
 		case Gstate::NumberPicker:
 			if (btns[i].id == ID::back)
 				valid = true;
-
+		case Gstate::Solving:
+			if (btns[i].id == ID::fastForward)
+				valid = true;
 			break;
 		}
 
@@ -589,10 +591,23 @@ void Game::initSprites()
 
 bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 {
+	if (gamestate == Gstate::Main)
+	{
+		sudoku.instantSolve();
+		for (int j = 0; j < 9; j++)
+			for (int i = 0; i < 9; i++)
+			{
+				std::string tempstr = (std::to_string(sudoku.table[j][i]) == "0") ? "" : std::to_string(sudoku.table[j][i]);
+				boxes[j][i].setText(tempstr);
+			}
+		throw std::string("false");
+	}
 	sf::Event temp;
 	while (window->pollEvent(temp))
 	{
-		if (temp.key.code == sf::Keyboard::Escape)
+		handleSfmlMouseEvent(temp);
+		mouseEventHandler(mouseEvent);
+		if(temp.type == sf::Event::KeyPressed)
 		{
 			throw std::string("false");
 		}
@@ -662,6 +677,8 @@ void Game::renderNumberPicker()
 }
 void Game::renderMain(bool optional)
 {
+	
+
 	window->draw(other_sprites[eBg]);
 	window->draw(other_sprites[eBgOverlay]);
 

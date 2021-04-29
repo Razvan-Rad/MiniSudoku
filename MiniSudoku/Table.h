@@ -13,7 +13,7 @@ class Table
 {
 	void initTable();
 	//generating
-	int solnTable[9][9];
+	int solvedTable[9][9];
 	int val[9];
 	int tablePos[81];
 	int difficultyLevel;
@@ -39,6 +39,6 @@ public:
 	void checkSolvability(int& number);
 	void gensudoku();
 	bool verifyTableStatus();
-	 
+	void instantSolve();
 	~Table();
 };
