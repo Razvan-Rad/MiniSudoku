@@ -26,8 +26,17 @@ enum class ID {
 	generate,
 	solve,
 	back,
-	box,
 	debug,
+	fastForward,
+	box
+};
+enum buttonIndex {
+	play,
+	settings,
+	media,
+	generate,
+	solve,
+	back,
 	fastForward
 };
 enum buttonState {

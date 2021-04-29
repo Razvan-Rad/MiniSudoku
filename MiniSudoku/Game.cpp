@@ -23,6 +23,7 @@ void Game::initOther()
 	unsolvedText.setFillColor(sf::Color::Black);
 }
 void Game::render() {
+	if(gamestate != Gstate::Generating)
 	window->clear();
 
 	switch (gamestate)
@@ -284,11 +285,20 @@ sf::Texture Game::loadTexture(std::string PATH)
 	return texture;
 }
 
-
-void Game::drawInterractable(Button& btn, ID ID)
+void Game::drawInterractableNew(int ID)
 {
-	if (btn.getId() == ID)
-	{
+	std::cout << buttons.size();
+
+	if (buttons[ID].shouldUpdate())
+		buttons[ID].setTexture(interractable_textures);
+
+	makeSound(buttons[ID], boxPressSound, btnPressSound);
+
+	window->draw(buttons[ID].getRect());
+	window->draw(buttons[ID].getText());
+}
+void Game::drawInterractable(Button& btn)
+{
 		if (btn.shouldUpdate())
 			btn.setTexture(interractable_textures);
 
@@ -296,7 +306,6 @@ void Game::drawInterractable(Button& btn, ID ID)
 
 		window->draw(btn.getRect());
 		window->draw(btn.getText());
-	}
 }
 void Game::makeSound(Button& btn, sf::Sound& boxPressSound, sf::Sound& btnPressSound)
 {
@@ -540,14 +549,13 @@ void Game::initButtons()
 {
 	std::pair<float, float> wide(150, 50);
 	std::pair<float, float> normal(50, 50);
-
+	
 	makeButton("PLAY", font, 205, 400, wide, ID::play);
-	makeButton("Generate", font, 145, 20, wide, ID::generate);
-	makeButton("Solve", font, 300, 20, wide, ID::solve);
-
-	makeButton("", font, 90, 20, normal, ID::back);
 	makeButton("", font, 205, 455, normal, ID::settings);
 	makeButton("", font, 305, 455, normal, ID::media);
+	makeButton("Generate", font, 145, 20, wide, ID::generate);
+	makeButton("Solve", font, 300, 20, wide, ID::solve);
+	makeButton("", font, 90, 20, normal, ID::back);
 	makeButton("", font, 455, 20, normal, ID::fastForward);
 }
 
@@ -613,15 +621,12 @@ bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 	}
 	std::cout << std::endl;
 	renderMain(1);
-	for (size_t i = 0; i < buttons.size(); i++)
-	{
-		drawInterractable(buttons[i], ID::fastForward);
-	}
+	drawInterractableNew(fastForward);
 		for (int j = 0; j < 9; j++)
 		{
 			for (int i = 0; i < 9; i++)
 			{
-				drawInterractable(boxes[j][i], ID::box);
+				drawInterractable(boxes[j][i]);
 			}
 		}
 		window->display();
@@ -682,19 +687,17 @@ void Game::renderMain(bool optional)
 	window->draw(other_sprites[eBg]);
 	window->draw(other_sprites[eBgOverlay]);
 
-	for (size_t i = 0; i < buttons.size(); i++)
-	{
-		drawInterractable(buttons[i], ID::generate);
-		drawInterractable(buttons[i], ID::solve);
-		drawInterractable(buttons[i], ID::back);
-	}
+	drawInterractableNew(generate);
+	drawInterractableNew(solve);
+	drawInterractableNew(back);
+
 	if (!optional)
 	{
 		for (int j = 0; j < 9; j++) //col iter
 		{
 			for (int i = 0; i < 9; i++)
 			{
-				drawInterractable(boxes[j][i], ID::box);
+				drawInterractable(boxes[j][i]);
 			}
 		}
 	}
@@ -722,10 +725,7 @@ void Game::renderSettings()
 	window->draw(other_sprites[eBg]);
 	window->draw(other_sprites[eBgOverlay]);
 
-	for (size_t i = 0; i < buttons.size(); i++)
-	{
-		drawInterractable(buttons[i], ID::back);
-	}
+	drawInterractableNew(back);
 }
 
 void Game::renderIntro()
@@ -734,12 +734,10 @@ void Game::renderIntro()
 	window->draw(other_sprites[eIntroBg2]);
 	window->draw(other_sprites[eIntroBg0]);
 
-	for (size_t i = 0; i < buttons.size(); i++)
-	{
-		drawInterractable(buttons[i], ID::play);
-		drawInterractable(buttons[i], ID::settings);
-		drawInterractable(buttons[i], ID::media);
-	}
+
+		drawInterractableNew(play);
+		drawInterractableNew(media);
+		drawInterractableNew(settings);
 }
 
 void Game::renderSolving()
@@ -750,10 +748,7 @@ void Game::renderMedia()
 {
 	window->draw(other_sprites[eBg]);
 	window->draw(other_sprites[eBgOverlay]);
-	for (size_t i = 0; i < buttons.size(); i++)
-	{
-		drawInterractable(buttons[i], ID::back);
-	}
+	drawInterractableNew(back);
 	for (int i = 0; i < texts.size(); i++)
 	{
 		window->draw(texts[i]);
@@ -774,7 +769,7 @@ void Game::renderSolvingAnimation(int table[9][9])
 				count++;
 				boxes[j][i].flipChangeable();
 				boxes[j][i].resourcesHandler(eNone);
-				drawInterractable(boxes[j][i], ID::box);
+				drawInterractable(boxes[j][i]);
 			}
 			window->display();
 		}
