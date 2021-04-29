@@ -11,8 +11,17 @@ Game::Game()
 	initBoxes();
 	initSounds();
 	initMedia();
+	initOther();
 }
 
+void Game::initOther()
+{
+	unsolvedText.setFont(font);
+	unsolvedText.setString("Warning! May be Unsolvable because solving was interrupted");
+	unsolvedText.setPosition(5,570);
+	unsolvedText.setCharacterSize(20);
+	unsolvedText.setFillColor(sf::Color::Black);
+}
 void Game::render() {
 	window->clear();
 
@@ -38,7 +47,13 @@ void Game::render() {
 		break;
 
 	case Gstate::Solving:
-		loopHijacker(sudoku.table);
+		try { loopHijacker(sudoku.table); }
+		
+		catch (std::string temp)
+		{
+			std::cout << "cant solve";
+			unsolved = true;
+		}
 		gamestate = Gstate::SolvingAnimation;
 		break;
 
@@ -50,7 +65,8 @@ void Game::render() {
 
 	case Gstate::Generating:
 		renderGenerating();
-
+		unsolved = false;
+		unsolvedFadeCountdown = 255;
 		gamestate = Gstate::Main;
 		break;
 
@@ -493,6 +509,12 @@ void Game::initMedia()
 		i++;
 	}
 
+	unsolvedText.setFont(font);
+	unsolvedText.setString(tempstr);
+	unsolvedText.setPosition(65, i * 50 + offset);
+	unsolvedText.setCharacterSize(20);
+	unsolvedText.setFillColor(sf::Color::Black);
+
 }
 
 void Game::initBoxes()
@@ -572,22 +594,31 @@ void Game::initSprites()
 
 bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 {
-
-	renderMain(1);
-	/*
-	window->clear();
-	window->draw(other_sprites[eBg]);
-	window->draw(other_sprites[eBgOverlay]);*/
-
-	for (int j = 0; j < 9; j++)
+	sf::Event temp;
+	while (window->pollEvent(temp))
 	{
-		for (int i = 0; i < 9; i++)
+		if (temp.key.code == sf::Keyboard::Escape)
 		{
-			drawInterractable(boxes[j][i], ID::box);
+			throw std::string("false");
 		}
 	}
-	window->display();
-
+	for (int i = 0; i < 9; i++)
+	{
+		for (int j = 0; j < 9; j++)
+			std::cout << table[i][j];
+		std::cout << std::endl;
+	}
+	std::cout << std::endl;
+	renderMain(1);
+	
+		for (int j = 0; j < 9; j++)
+		{
+			for (int i = 0; i < 9; i++)
+			{
+				drawInterractable(boxes[j][i], ID::box);
+			}
+		}
+		window->display();
 	int row, col;
 	if (!sudoku.emptyBoxes(row, col)) return true;
 	for (int val = 1; val <= 9; val++)
@@ -660,6 +691,22 @@ void Game::renderMain(bool optional)
 				drawInterractable(boxes[j][i], ID::box);
 			}
 		}
+	}
+	if (unsolved)
+	{
+		sf::Color fade(0, 0, 0, unsolvedFadeCountdown);
+		unsolvedText.setFillColor(fade);
+
+		unsolvedFadeCountdown--;
+		std::cout << unsolvedFadeCountdown;
+		std::cout << std::endl;
+		if (unsolvedFadeCountdown <= 0)
+		{
+			unsolved = false;
+			unsolvedFadeCountdown = 0;
+		}
+
+		window->draw(unsolvedText);
 	}
 
 }
@@ -770,8 +817,8 @@ void Game::renderIntroAnimationReverse()
 
 	sf::Color fade(255, 255, 255, 0);
 
-	other_sprites[eIntroBg2].setPosition(0, -750);
-	other_sprites[eIntroBg].setPosition(0, 750);
+	other_sprites[eIntroBg2].setPosition(0, -600);
+	other_sprites[eIntroBg].setPosition(0, 600);
 	other_sprites[eIntroBg0].setColor(fade);
 
 
@@ -805,8 +852,8 @@ void Game::renderIntroAnimationReverse()
 		window->draw(other_sprites[eIntroBg2]);
 		window->draw(other_sprites[eIntroBg0]);
 
-		other_sprites[eIntroBg].move(0, -7.5);
-		other_sprites[eIntroBg2].move(0, 7.5);
+		other_sprites[eIntroBg].move(0, -6);
+		other_sprites[eIntroBg2].move(0, 6);
 		other_sprites[eIntroBg0].setColor(fade);
 		//for (int i = 0; i < buttons.size(); i++)
 		//{

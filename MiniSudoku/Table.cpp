@@ -6,7 +6,7 @@ Table::~Table()
 	//delete[] table[];
 }
 
-int genRandNum(int maxLimit)
+int genRandnr(int maxLimit)
 {
     return rand() % maxLimit;
 }
@@ -48,7 +48,8 @@ bool Table::emptyBoxes(int& row, int& col)
 	for (row = 0; row < 9; row++)
 		for (col = 0; col < 9; col++)
 		{
-			if (table[row][col] == 0) return true;
+			if (table[row][col] == 0) 
+                return true;
 		}
 	return false;
 }
@@ -80,7 +81,7 @@ Table::Table()
         tablePos[i] = i;
     }
 
-    random_shuffle(tablePos, (tablePos) + 81, genRandNum);
+    random_shuffle(tablePos, (tablePos) + 81, genRandnr);
 
 
     for (int i = 0; i < 9; i++)
@@ -88,7 +89,7 @@ Table::Table()
         val[i] = i + 1;
     }
 
-    random_shuffle(val, (val) + 9, genRandNum);
+    random_shuffle(val, (val) + 9, genRandnr);
 
 
     for (int i = 0; i < 9; i++)
@@ -113,62 +114,62 @@ Table::Table(std::string table_str, bool row_major)
 
     for (int i = 0; i < 81; ++i)
     {
-        int curr_num = table_str[i] - '0';
-        if (!((curr_num == 0) || (curr_num > 0 && curr_num < 10)))
+        int curr_nr = table_str[i] - '0';
+        if (!((curr_nr == 0) || (curr_nr > 0 && curr_nr < 10)))
         {
             table_status = false;
             return;
         }
 
-        if (row_major) table[i / 9][i % 9] = curr_num;
-        else          table[i % 9][i / 9] = curr_num;
+        if (row_major) table[i / 9][i % 9] = curr_nr;
+        else          table[i % 9][i / 9] = curr_nr;
     }
 
 
-    for (int col_num = 0; col_num < 9; ++col_num)
+    for (int col_nr = 0; col_nr < 9; ++col_nr)
     {
-        bool nums[10] = { false };
-        for (int row_num = 0; row_num < 9; ++row_num)
+        bool nrs[10] = { false };
+        for (int row_nr = 0; row_nr < 9; ++row_nr)
         {
-            int curr_num = table[row_num][col_num];
-            if (curr_num != 0 && nums[curr_num] == true)
+            int curr_nr = table[row_nr][col_nr];
+            if (curr_nr != 0 && nrs[curr_nr] == true)
             {
                 table_status = false;
                 return;
             }
-            nums[curr_num] = true;
+            nrs[curr_nr] = true;
         }
     }
 
 
-    for (int row_num = 0; row_num < 9; ++row_num)
+    for (int row_nr = 0; row_nr < 9; ++row_nr)
     {
-        bool nums[10] = { false };
-        for (int col_num = 0; col_num < 9; ++col_num)
+        bool nrs[10] = { false };
+        for (int col_nr = 0; col_nr < 9; ++col_nr)
         {
-            int curr_num = table[row_num][col_num];
-            if (curr_num != 0 && nums[curr_num] == true)
+            int curr_nr = table[row_nr][col_nr];
+            if (curr_nr != 0 && nrs[curr_nr] == true)
             {
                 table_status = false;
                 return;
             }
-            nums[curr_num] = true;
+            nrs[curr_nr] = true;
         }
     }
 
 
-    for (int block_num = 0; block_num < 9; ++block_num)
+    for (int block_nr = 0; block_nr < 9; ++block_nr)
     {
-        bool nums[10] = { false };
-        for (int cell_num = 0; cell_num < 9; ++cell_num)
+        bool nrs[10] = { false };
+        for (int cell_nr = 0; cell_nr < 9; ++cell_nr)
         {
-            int curr_num = table[((int)(block_num / 3)) * 3 + (cell_num / 3)][((int)(block_num % 3)) * 3 + (cell_num % 3)];
-            if (curr_num != 0 && nums[curr_num] == true)
+            int curr_nr = table[((int)(block_nr / 3)) * 3 + (cell_nr / 3)][((int)(block_nr % 3)) * 3 + (cell_nr % 3)];
+            if (curr_nr != 0 && nrs[curr_nr] == true)
             {
                 table_status = false;
                 return;
             }
-            nums[curr_num] = true;
+            nrs[curr_nr] = true;
         }
     }
 
@@ -178,7 +179,7 @@ Table::Table(std::string table_str, bool row_major)
         val[i] = i + 1;
     }
 
-    random_shuffle(val, (val) + 9, genRandNum);
+    random_shuffle(val, (val) + 9, genRandnr);
 
     table_status = true;
 }
@@ -213,13 +214,13 @@ bool Table::solveTable()
         return true; 
 
 
-    for (int num = 0; num < 9; num++)
+    for (int nr = 0; nr < 9; nr++)
     {
   
-        if (isSafe(row, col, val[num]))
+        if (isSafe(row, col, val[nr]))
         {
        
-            table[row][col] = val[num];
+            table[row][col] = val[nr];
 
           
             if (solveTable())
@@ -234,23 +235,23 @@ bool Table::solveTable()
 
 }
 
-void Table::checkSolvability(int& number)
+void Table::checkSolvability(int& nrber)
 {
     int row, col;
 
     if (!Find0Location(table, row, col))
     {
-        number++;
+        nrber++;
         return;
     }
 
 
-    for (int i = 0; i < 9 && number < 2; i++)
+    for (int i = 0; i < 9 && nrber < 2; i++)
     {
         if (isSafe(row, col, val[i]))
         {
             table[row][col] = val[i];
-            checkSolvability(number);
+            checkSolvability(nrber);
         }
 
         table[row][col] = 0;

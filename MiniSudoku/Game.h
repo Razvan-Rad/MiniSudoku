@@ -58,6 +58,11 @@ class Game
 	void initBoxes();
 	void initSounds();
 	void initMedia();
+	void initOther();
+
+	int unsolvedFadeCountdown = 255	;
+	bool unsolved = false;
+	sf::Text unsolvedText;
 
 	void checkButtonColision(std::vector<Button>& btns, sf::Vector2i, int newButtonState, bool buttons = false);
 	//void drawInterractable(Button& btn);

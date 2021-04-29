@@ -1,2 +1,8 @@
 Press a number!
-This project was created to  experiment with SFML and C++
+This project was created to experiment with SFML and C++
+I've started learning SFML to showcase my C++ programming
+abilities. 
+
+This project has two basic algorithms used:
+A sudoku generating algorithm and a solving algorithm based
+on backtracking.
