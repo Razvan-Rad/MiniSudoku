@@ -393,23 +393,6 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 
 			break;
 		default:
-			/*
-printf("debug GState ");
-for (size_t i = 0; i < btns.size(); i++)
-{
-
-	if (btns[i].checkBounds(mousepos))
-	{
-		Gstate temp = btns[i].resourcesHandler(newButtonState);
-		Pgamestate = gamestate;
-		gamestate = (temp == Gstate::Debug) ? gamestate : temp;
-
-	}
-	else
-		btns[i].resourcesHandler(eNone);
-
-}
-*/
 			break;
 
 		}
