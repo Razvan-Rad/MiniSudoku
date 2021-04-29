@@ -277,21 +277,3 @@ void Table::gensudoku()
         }
     }
 }
-void Table::printSudoku()
-{
-    for (int i = 0; i < 9; i++)
-    {
-        for (int j = 0; j < 9; j++)
-        {
-            if (table[i][j] == 0)
-                cout << ".";
-            else
-                cout << table[i][j];
-            cout << "|";
-        }
-        cout << endl;
-    }
-
-    cout << "\nDifficulty of current sudoku(0 being easiest): " << this->difficultyLevel;
-    cout << endl;
-}

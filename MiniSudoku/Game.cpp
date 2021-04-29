@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <malloc.h>
 Game::Game()
 {
 	gamestate = Gstate::Intro;
@@ -52,7 +53,6 @@ void Game::render() {
 		
 		catch (std::string temp)
 		{
-			std::cout << "cant solve";
 			unsolved = true;
 		}
 		gamestate = Gstate::SolvingAnimation;
@@ -83,7 +83,6 @@ void Game::render() {
 		renderNumberPicker();
 		break;
 	default:
-		printf("no man should be here\n");
 		break;
 	}
 	window->display();
@@ -287,7 +286,6 @@ sf::Texture Game::loadTexture(std::string PATH)
 
 void Game::drawInterractableNew(int ID)
 {
-	std::cout << buttons.size();
 
 	if (buttons[ID].shouldUpdate())
 		buttons[ID].setTexture(interractable_textures);
@@ -536,7 +534,8 @@ void Game::initButtons()
 	std::pair<float, float> normal(50, 50);
 	
 	makeButton("PLAY", font, 205, 400, wide, ID::play);
-	makeButton("", font, 205, 455, normal, ID::settings);
+	//makeButton("", font, 205, 455, normal, ID::settings);
+	makeButton("", font, -205, 455, normal, ID::settings); //i am busy with another project, i will get back to this later. TODO.
 	makeButton("", font, 305, 455, normal, ID::media);
 	makeButton("Generate", font, 145, 20, wide, ID::generate);
 	makeButton("Solve", font, 300, 20, wide, ID::solve);
@@ -598,13 +597,7 @@ bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 			throw std::string("false");
 		}
 	}
-	for (int i = 0; i < 9; i++)
-	{
-		for (int j = 0; j < 9; j++)
-			std::cout << table[i][j];
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
+
 	renderMain(1);
 	drawInterractableNew(fastForward);
 		for (int j = 0; j < 9; j++)
@@ -693,8 +686,7 @@ void Game::renderMain(bool optional)
 		unsolvedText.setFillColor(fade);
 
 		unsolvedFadeCountdown--;
-		std::cout << unsolvedFadeCountdown;
-		std::cout << std::endl;
+
 		if (unsolvedFadeCountdown <= 0)
 		{
 			unsolved = false;
