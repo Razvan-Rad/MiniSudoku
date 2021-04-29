@@ -333,7 +333,7 @@ void Game::prepareSprites()
 	other_sprites[eNrPickerOverlay].setScale(4, 4);
 }
 
-void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos, int newButtonState, bool isButton)
+void Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos, int newButtonState, bool isButton)
 {
 	//MY PURPOSE:
 	//i check if the buttons you are trying to push are within reach (in the same gamestate)
@@ -354,9 +354,6 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 
 			gamestate = (temp == Gstate::Debug) ? gamestate : temp;
 
-
-
-
 		}
 		return;
 	}
@@ -367,11 +364,9 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 
 		if (!btns[i].checkBounds(mousepos))
 		{
-
 			btns[i].resourcesHandler(eNone);
 			continue; //if we dont hover, continue
 		}
-
 
 		bool valid = false;
 		switch (gamestate)
@@ -414,7 +409,6 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 
 			gamestate = (temp == Gstate::Debug) ? gamestate : temp;
 			return;
-		
 	}
 
 }
@@ -560,7 +554,7 @@ void Game::initTextures()
 
 	while (getline(read, x))
 	{
-		if (x[0] == '#') continue;
+		if (x == "") continue;
 
 		if (x[0] != '!') // Flagged as interractable, add bool
 		{
@@ -692,8 +686,9 @@ void Game::renderMain(bool optional)
 			}
 		}
 	}
-	if (unsolved)
-	{
+	if (!unsolved)
+		return;
+	
 		sf::Color fade(0, 0, 0, unsolvedFadeCountdown);
 		unsolvedText.setFillColor(fade);
 
@@ -707,8 +702,7 @@ void Game::renderMain(bool optional)
 		}
 
 		window->draw(unsolvedText);
-	}
-
+	
 }
 
 void Game::renderSettings()
