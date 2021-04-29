@@ -364,6 +364,15 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 
 	for (size_t i = 0; i < btns.size(); i++)
 	{
+
+		if (!btns[i].checkBounds(mousepos))
+		{
+
+			btns[i].resourcesHandler(eNone);
+			continue; //if we dont hover, continue
+		}
+
+
 		bool valid = false;
 		switch (gamestate)
 		{
@@ -392,21 +401,20 @@ void  Game::checkButtonColision(std::vector<Button>& btns, sf::Vector2i mousepos
 				valid = true;
 
 			break;
-		default:
-			break;
-
 		}
 
-		if (valid && btns[i].checkBounds(mousepos))
+		if (!valid)
 		{
+			btns[i].resourcesHandler(eNone);
+			continue;
+		}
 			//we know the button contains the cursor. We are hovering/holding
 			Pgamestate = gamestate;
 			Gstate temp = btns[i].resourcesHandler(newButtonState);
 
 			gamestate = (temp == Gstate::Debug) ? gamestate : temp;
 			return;
-		}
-		btns[i].resourcesHandler(eNone);
+		
 	}
 
 }
