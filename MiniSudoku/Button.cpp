@@ -15,6 +15,9 @@ void Button::assignTexture(ID id)
 	case ID::box:
 		textureIndex = eBox;
 		break;
+	case ID::fastForward:
+		textureIndex = eBox;//TODO
+		break;
 	case ID::generate:
 	case ID::solve:
 	case ID::play:

@@ -501,6 +501,8 @@ void Game::initMedia()
 		if (i != -1)
 		{
 			texts.push_back(*text);
+			i++;
+			continue;
 		}
 		nrSelectorText = *text;
 		nrSelectorText.setCharacterSize(30);
@@ -546,6 +548,7 @@ void Game::initButtons()
 	makeButton("", font, 90, 20, normal, ID::back);
 	makeButton("", font, 205, 455, normal, ID::settings);
 	makeButton("", font, 305, 455, normal, ID::media);
+	makeButton("", font, 455, 20, normal, ID::fastForward);
 }
 
 void Game::initTextures()
@@ -610,7 +613,10 @@ bool Game::loopHijacker(int table[9][9]) //returns if it's solved or not
 	}
 	std::cout << std::endl;
 	renderMain(1);
-	
+	for (size_t i = 0; i < buttons.size(); i++)
+	{
+		drawInterractable(buttons[i], ID::fastForward);
+	}
 		for (int j = 0; j < 9; j++)
 		{
 			for (int i = 0; i < 9; i++)

@@ -27,7 +27,8 @@ enum class ID {
 	solve,
 	back,
 	box,
-	debug
+	debug,
+	fastForward
 };
 enum buttonState {
 	eNone,
@@ -62,7 +63,11 @@ enum interractable_texture_indexes {
 
 	eSettings,
 	eHover_settings,
-	eActive_settings
+	eActive_settings,
+
+	eFastForward,
+	eHover_ffw,
+	eActive_ffw
 };
 
 struct MouseButtonEvent {
