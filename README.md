@@ -19,6 +19,6 @@ If all moves are exhausted, the program stops. At any time, the new button that 
 ![image](https://user-images.githubusercontent.com/81370219/171404240-958db476-0b4c-4191-9447-9c3c88f7cf83.png)
 Pressinge scape while solving cancels the backtracking algorithm and allows the player to continue from there on.
 
-![image](https://user-images.githubusercontent.com/81370219/171404553-d2e63e99-cc80-4e2f-8f72-02e0fe41e8d2.png)
+![image](https://user-images.githubusercontent.com/81370219/171404725-9e002bc9-c79a-4a13-80ec-68fe19a91ba5.png)
 
 Thank you for viewing my project!
